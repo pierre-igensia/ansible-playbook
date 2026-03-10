@@ -1,0 +1,17 @@
+# Configuration du serveur {{ serveur_web_nom }}
+# Généré par Ansible le {{ ansible_date_time.date }}
+# NE PAS MODIFIER MANUELLEMENT
+
+[serveur]
+nom={{ serveur_web_nom }}
+port={{ serveur_web_port }}
+racine={{ serveur_web_racine }}
+version={{ serveur_web_version }}
+
+[sécurité]
+ssl={{ 'activé' if serveur_web_activer_ssl else 'désactivé' }}
+admin={{ serveur_web_admin_email }}
+
+[journalisation]
+répertoire={{ serveur_web_fichiers_log }}
+niveau=INFO
