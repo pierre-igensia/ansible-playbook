@@ -53,11 +53,15 @@ Les plugins de callback sont déclenchés à différents moments de l'exécution
 ```ini
 # ansible.cfg
 [defaults]
-# Sortie YAML (plus lisible)
-stdout_callback = yaml
+# Sortie YAML (plus lisible) via le callback default
+stdout_callback = default
+bin_ansible_callbacks = true
 
 # Activer des plugins supplémentaires
 callbacks_enabled = ansible.posix.timer, ansible.posix.profile_tasks, ansible.posix.profile_roles
+
+[callback_default]
+result_format = yaml
 ```
 
 | Plugin | Description |
