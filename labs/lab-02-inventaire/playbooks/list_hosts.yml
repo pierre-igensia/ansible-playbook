@@ -1,0 +1,12 @@
+---
+- name: Lister les hôtes et leurs variables
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Afficher le nom de l'hôte et ses variables
+      ansible.builtin.debug:
+        msg: |
+          Hôte: {{ inventory_hostname }}
+          Groupes: {{ group_names | join(', ') }}
+          HTTP Port: {{ http_port | default('non défini') }}

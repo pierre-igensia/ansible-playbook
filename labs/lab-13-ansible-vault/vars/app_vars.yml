@@ -1,0 +1,7 @@
+---
+# Variables non sensibles de l'application
+app_nom: "mon-app-securisee"
+app_version: "1.5.0"
+app_port: 8443
+app_environnement: "production"
+app_repertoire: "/tmp/vault_demo"

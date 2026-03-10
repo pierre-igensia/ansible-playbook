@@ -1,0 +1,9 @@
+---
+# Variables internes du rôle (priorité haute - ne pas surcharger)
+serveur_web_repertoires:
+  - "{{ serveur_web_racine }}"
+  - "{{ serveur_web_racine }}/assets"
+  - "{{ serveur_web_racine }}/css"
+  - "{{ serveur_web_racine }}/js"
+
+serveur_web_fichiers_log: "{{ serveur_web_racine }}/logs"

@@ -1,0 +1,70 @@
+---
+- name: Démonstration des handlers
+  hosts: local
+  gather_facts: false
+  vars:
+    config_dir: /tmp/handlers_demo
+    nginx_config: "{{ config_dir }}/nginx.conf"
+    app_config: "{{ config_dir }}/app.conf"
+
+  handlers:
+    - name: Redémarrer nginx
+      ansible.builtin.debug:
+        msg: "🔄 Handler déclenché: Redémarrage de nginx..."
+      listen: "restart web services"
+
+    - name: Recharger la configuration
+      ansible.builtin.debug:
+        msg: "🔄 Handler déclenché: Rechargement de la configuration..."
+      listen: "restart web services"
+
+    - name: Notifier l'équipe
+      ansible.builtin.debug:
+        msg: "📧 Handler déclenché: Notification de l'équipe ops..."
+
+  tasks:
+    - name: Créer le répertoire de démo
+      ansible.builtin.file:
+        path: "{{ config_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Déployer la configuration nginx
+      ansible.builtin.copy:
+        content: |
+          # Configuration nginx simulée
+          worker_processes auto;
+
+          http {
+            server {
+              listen 80;
+              server_name localhost;
+            }
+          }
+        dest: "{{ nginx_config }}"
+        mode: '0644'
+      notify:
+        - Redémarrer nginx
+        - Notifier l'équipe
+
+    - name: Déployer la configuration application
+      ansible.builtin.copy:
+        content: |
+          [app]
+          port=8080
+          workers=4
+          log_level=INFO
+        dest: "{{ app_config }}"
+        mode: '0644'
+      notify: "restart web services"
+
+    - name: Cette tâche ne déclenche pas de handler
+      ansible.builtin.debug:
+        msg: "Pas de changement = pas de handler"
+
+    - name: Forcer l'exécution des handlers maintenant
+      ansible.builtin.meta: flush_handlers
+
+    - name: Tâche après flush_handlers
+      ansible.builtin.debug:
+        msg: "Les handlers ont été exécutés avant cette tâche"

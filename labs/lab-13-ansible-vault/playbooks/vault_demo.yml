@@ -1,0 +1,61 @@
+---
+- name: Démonstration d'Ansible Vault
+  hosts: local
+  gather_facts: false
+  vars_files:
+    - ../vars/app_vars.yml
+    - ../vars/secrets.yml
+
+  tasks:
+    - name: Créer le répertoire de l'application
+      ansible.builtin.file:
+        path: "{{ app_repertoire }}"
+        state: directory
+        mode: '0750'
+
+    - name: Afficher les variables non sensibles
+      ansible.builtin.debug:
+        msg: "Application : {{ app_nom }} v{{ app_version }} sur le port {{ app_port }}"
+
+    - name: Vérifier que les secrets sont bien chargés
+      ansible.builtin.debug:
+        msg: "Utilisateur BDD : {{ bdd_utilisateur }} sur {{ bdd_hote }}"
+
+    - name: Créer le fichier de configuration avec les secrets
+      ansible.builtin.copy:
+        content: |
+          # Configuration générée par Ansible
+          # NE PAS VERSIONNER CE FICHIER
+
+          [base_de_données]
+          hote={{ bdd_hote }}
+          utilisateur={{ bdd_utilisateur }}
+          # Le mot de passe est injecté via variable d'environnement en production
+
+          [api]
+          # Les clés API ne sont jamais stockées en clair dans les fichiers de config
+          # Elles sont injectées via des variables d'environnement
+
+          [application]
+          nom={{ app_nom }}
+          version={{ app_version }}
+          port={{ app_port }}
+        dest: "{{ app_repertoire }}/app.conf"
+        mode: '0600'
+
+    - name: Simuler l'utilisation d'un secret sans l'afficher
+      ansible.builtin.debug:
+        msg: "Connexion à la BDD avec l'utilisateur {{ bdd_utilisateur }} (mot de passe masqué)"
+
+    - name: Exemple avec no_log pour masquer les secrets dans les logs
+      ansible.builtin.command:
+        cmd: "echo 'Connexion établie'"
+      environment:
+        DB_PASSWORD: "{{ bdd_mot_de_passe }}"
+      no_log: true
+      register: connexion
+      changed_when: false
+
+    - name: Confirmer la connexion (sans afficher le secret)
+      ansible.builtin.debug:
+        msg: "✅ Connexion simulée : {{ connexion.stdout }}"

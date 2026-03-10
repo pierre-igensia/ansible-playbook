@@ -1,0 +1,31 @@
+---
+- name: Déploiement complet avec import_tasks et include_tasks
+  hosts: local
+  gather_facts: true
+  vars:
+    app_nom: "demo-includes"
+    app_version: "1.0.0"
+    app_port: 8080
+    app_environnement: "developpement"
+    app_repertoire: "/tmp/includes_demo"
+
+  tasks:
+    - name: Afficher le début du déploiement
+      ansible.builtin.debug:
+        msg: "🚀 Début du déploiement de {{ app_nom }} v{{ app_version }}"
+
+    # import_tasks : résolu au parsing (statique)
+    - name: Phase d'installation (import statique)
+      ansible.builtin.import_tasks: ../tasks/installation.yml
+
+    # import_tasks : résolu au parsing (statique)
+    - name: Phase de configuration (import statique)
+      ansible.builtin.import_tasks: ../tasks/configuration.yml
+
+    # include_tasks : résolu à l'exécution (dynamique)
+    - name: Phase de validation (include dynamique)
+      ansible.builtin.include_tasks: ../tasks/validation.yml
+
+    - name: Afficher la fin du déploiement
+      ansible.builtin.debug:
+        msg: "✅ Déploiement de {{ app_nom }} terminé avec succès !"

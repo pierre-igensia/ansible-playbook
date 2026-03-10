@@ -1,0 +1,32 @@
+---
+- name: Exploration approfondie des facts
+  hosts: local
+  gather_facts: true
+
+  tasks:
+    - name: Tous les facts de réseau
+      ansible.builtin.debug:
+        var: ansible_interfaces
+
+    - name: Facts de montage disque
+      ansible.builtin.debug:
+        var: ansible_mounts
+
+    - name: Utiliser set_fact pour créer des variables dynamiques
+      ansible.builtin.set_fact:
+        disk_usage_pct: "{{ ((ansible_mounts[0].size_total - ansible_mounts[0].size_available) / ansible_mounts[0].size_total * 100) | round(2) }}"
+      when: ansible_mounts | length > 0
+
+    - name: Afficher l'utilisation disque
+      ansible.builtin.debug:
+        msg: "Utilisation disque ({{ ansible_mounts[0].mount }}): {{ disk_usage_pct }}%"
+      when: disk_usage_pct is defined
+
+    - name: Facts personnalisés avec set_fact
+      ansible.builtin.set_fact:
+        ma_variable_custom: "valeur calculée à {{ ansible_date_time.time }}"
+        est_debian: "{{ ansible_os_family == 'Debian' }}"
+
+    - name: Afficher les variables personnalisées
+      ansible.builtin.debug:
+        msg: "Custom: {{ ma_variable_custom }}, Est Debian: {{ est_debian }}"

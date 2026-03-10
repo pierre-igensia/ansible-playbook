@@ -1,0 +1,28 @@
+---
+# Tâches de configuration - importées/incluses dans le playbook principal
+- name: Créer le répertoire de configuration
+  ansible.builtin.file:
+    path: "{{ app_repertoire }}/config"
+    state: directory
+    mode: '0755'
+
+- name: Déployer la configuration principale
+  ansible.builtin.copy:
+    content: |
+      [application]
+      nom={{ app_nom }}
+      version={{ app_version }}
+      port={{ app_port | default(8080) }}
+      environnement={{ app_environnement | default('production') }}
+
+      [journalisation]
+      niveau={{ log_niveau | default('INFO') }}
+      repertoire={{ app_repertoire }}/logs
+    dest: "{{ app_repertoire }}/config/app.conf"
+    mode: '0640'
+
+- name: Créer le répertoire de logs
+  ansible.builtin.file:
+    path: "{{ app_repertoire }}/logs"
+    state: directory
+    mode: '0750'

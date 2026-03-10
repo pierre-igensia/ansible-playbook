@@ -1,0 +1,66 @@
+---
+- name: Démonstration des boucles
+  hosts: local
+  gather_facts: false
+  vars:
+    utilisateurs:
+      - nom: alice
+        shell: /bin/bash
+        groupes: [sudo, docker]
+      - nom: bob
+        shell: /bin/sh
+        groupes: [www-data]
+      - nom: charlie
+        shell: /bin/bash
+        groupes: [sudo]
+
+    paquets_dev:
+      - git
+      - vim
+      - curl
+
+    fichiers_config:
+      nginx: /tmp/nginx.conf
+      apache: /tmp/apache.conf
+      mysql: /tmp/mysql.conf
+
+  tasks:
+    - name: Boucle simple sur une liste
+      ansible.builtin.debug:
+        msg: "Paquet à installer: {{ item }}"
+      loop: "{{ paquets_dev }}"
+
+    - name: Boucle sur une liste de dictionnaires
+      ansible.builtin.debug:
+        msg: "Utilisateur: {{ item.nom }}, Shell: {{ item.shell }}, Groupes: {{ item.groupes | join(', ') }}"
+      loop: "{{ utilisateurs }}"
+      loop_control:
+        label: "{{ item.nom }}"
+
+    - name: Boucle sur un dictionnaire avec dict2items
+      ansible.builtin.debug:
+        msg: "Service '{{ item.key }}' -> fichier: {{ item.value }}"
+      loop: "{{ fichiers_config | dict2items }}"
+
+    - name: Créer plusieurs fichiers avec une boucle
+      ansible.builtin.copy:
+        content: "# Config {{ item.key }}\ncreated_by=ansible\n"
+        dest: "{{ item.value }}"
+        mode: '0644'
+      loop: "{{ fichiers_config | dict2items }}"
+
+    - name: Boucle avec index (loop_control)
+      ansible.builtin.debug:
+        msg: "[{{ my_idx + 1 }}/{{ paquets_dev | length }}] Traitement de: {{ item }}"
+      loop: "{{ paquets_dev }}"
+      loop_control:
+        index_var: my_idx
+
+    - name: Boucle avec until (retry)
+      ansible.builtin.command:
+        cmd: "echo 'tentative'"
+      register: result
+      until: result.rc == 0
+      retries: 3
+      delay: 1
+      changed_when: false

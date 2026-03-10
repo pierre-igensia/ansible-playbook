@@ -1,0 +1,11 @@
+---
+- name: Déploiement du serveur web avec un rôle
+  hosts: local
+  gather_facts: true
+
+  roles:
+    - role: ../roles/serveur-web
+      vars:
+        serveur_web_port: 8080
+        serveur_web_nom: "lab-09-demo"
+        serveur_web_admin_email: "formation@exemple.com"

@@ -1,0 +1,20 @@
+---
+# Tâches d'installation - importées/incluses dans le playbook principal
+- name: Créer le répertoire d'installation
+  ansible.builtin.file:
+    path: "{{ app_repertoire }}/install"
+    state: directory
+    mode: '0755'
+
+- name: Créer le fichier de version
+  ansible.builtin.copy:
+    content: "{{ app_version }}\n"
+    dest: "{{ app_repertoire }}/install/VERSION"
+    mode: '0644'
+
+- name: Journaliser l'installation
+  ansible.builtin.lineinfile:
+    path: "{{ app_repertoire }}/install/journal.log"
+    line: "[{{ ansible_date_time.iso8601 }}] Installation de {{ app_nom }} v{{ app_version }}"
+    create: true
+    mode: '0644'

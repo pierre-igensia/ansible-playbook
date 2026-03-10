@@ -1,0 +1,68 @@
+{# Macro pour afficher une carte d'information #}
+{% macro carte(titre, valeur, classe='info') %}
+<div class="card {{ classe }}">
+  <h3>{{ titre }}</h3>
+  <p>{{ valeur }}</p>
+</div>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport Ansible – {{ ansible_hostname }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+    .card { background: white; padding: 15px; margin: 10px; border-radius: 8px; display: inline-block; min-width: 200px; }
+    .info { border-left: 4px solid #3498db; }
+    .success { border-left: 4px solid #2ecc71; }
+    .warning { border-left: 4px solid #f39c12; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; }
+    th { background: #3498db; color: white; padding: 10px; }
+    td { padding: 8px; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>📊 Rapport Système – {{ ansible_hostname }}</h1>
+  <p><em>Généré le {{ ansible_date_time.date }} à {{ ansible_date_time.time }} par Ansible</em></p>
+
+  <h2>Informations générales</h2>
+  <div>
+    {{ carte('Système d\'exploitation', ansible_distribution + ' ' + ansible_distribution_version) }}
+    {{ carte('Architecture', ansible_architecture) }}
+    {{ carte('Kernel', ansible_kernel) }}
+    {{ carte('Mémoire RAM', ansible_memtotal_mb | string + ' MB', 'info') }}
+    {{ carte('Processeurs', ansible_processor_vcpus | string + ' vCPU') }}
+    {{ carte('IP principale', ansible_default_ipv4.address | default('N/A')) }}
+  </div>
+
+  <h2>Interfaces réseau</h2>
+  <table>
+    <thead><tr><th>Interface</th><th>Statut</th></tr></thead>
+    <tbody>
+{% for iface in ansible_interfaces | sort %}
+      <tr>
+        <td><code>{{ iface }}</code></td>
+        <td>{{ '✅ Active' if hostvars[inventory_hostname]['ansible_' + iface | replace('-','_')] is defined else '❓ Inconnu' }}</td>
+      </tr>
+{% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Points de montage</h2>
+  <table>
+    <thead><tr><th>Point de montage</th><th>Système de fichiers</th><th>Taille</th><th>Utilisé</th><th>Libre</th></tr></thead>
+    <tbody>
+{% for mount in ansible_mounts %}
+      <tr>
+        <td>{{ mount.mount }}</td>
+        <td>{{ mount.fstype }}</td>
+        <td>{{ (mount.size_total / 1024 / 1024 / 1024) | round(1) }} Go</td>
+        <td>{{ ((mount.size_total - mount.size_available) / mount.size_total * 100) | round(1) }}%</td>
+        <td>{{ (mount.size_available / 1024 / 1024 / 1024) | round(1) }} Go</td>
+      </tr>
+{% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

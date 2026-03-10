@@ -1,0 +1,83 @@
+---
+- name: Tests des modules personnalisés
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: Créer le répertoire de test
+      ansible.builtin.file:
+        path: /tmp/modules_demo
+        state: directory
+        mode: '0755'
+
+    - name: Créer une entrée dans un fichier INI (etat=present)
+      gestion_ini:
+        chemin: /tmp/modules_demo/config.ini
+        section: base_de_donnees
+        cle: hote
+        valeur: "localhost"
+        etat: present
+      register: resultat_1
+
+    - name: Afficher le résultat de la création
+      ansible.builtin.debug:
+        msg: "Modifié : {{ resultat_1.changed }}, Message : {{ resultat_1.message }}"
+
+    - name: Ajouter d'autres entrées
+      gestion_ini:
+        chemin: /tmp/modules_demo/config.ini
+        section: "{{ item.section }}"
+        cle: "{{ item.cle }}"
+        valeur: "{{ item.valeur }}"
+        etat: present
+      loop:
+        - section: base_de_donnees
+          cle: port
+          valeur: "5432"
+        - section: base_de_donnees
+          cle: nom
+          valeur: "ma_bdd"
+        - section: application
+          cle: debogage
+          valeur: "false"
+        - section: application
+          cle: niveau_log
+          valeur: "INFO"
+
+    - name: Vérifier l'idempotence (2ème exécution)
+      gestion_ini:
+        chemin: /tmp/modules_demo/config.ini
+        section: base_de_donnees
+        cle: hote
+        valeur: "localhost"
+        etat: present
+      register: resultat_idempotent
+
+    - name: Vérifier que rien n'a changé
+      ansible.builtin.assert:
+        that:
+          - not resultat_idempotent.changed
+        fail_msg: "ERREUR : Le module n'est pas idempotent !"
+        success_msg: "✅ Module idempotent : aucune modification lors de la 2ème exécution"
+
+    - name: Afficher le fichier INI créé
+      ansible.builtin.command:
+        cmd: cat /tmp/modules_demo/config.ini
+      register: contenu_ini
+      changed_when: false
+
+    - name: Montrer le contenu
+      ansible.builtin.debug:
+        var: contenu_ini.stdout_lines
+
+    - name: Tester la suppression d'une entrée (etat=absent)
+      gestion_ini:
+        chemin: /tmp/modules_demo/config.ini
+        section: base_de_donnees
+        cle: nom
+        etat: absent
+      register: resultat_suppression
+
+    - name: Confirmer la suppression
+      ansible.builtin.debug:
+        msg: "{{ resultat_suppression.message }}"

@@ -1,0 +1,60 @@
+---
+- name: Démonstration de block/rescue/always
+  hosts: local
+  gather_facts: false
+  vars:
+    répertoire_démo: /tmp/erreurs_demo
+    simuler_echec: false
+
+  tasks:
+    - name: Créer le répertoire de démo
+      ansible.builtin.file:
+        path: "{{ répertoire_démo }}"
+        state: directory
+        mode: '0755'
+
+    # Bloc avec gestion d'erreur complète
+    - name: Bloc de déploiement avec gestion d'erreur
+      block:
+        - name: Étape 1 - Sauvegarde
+          ansible.builtin.copy:
+            content: "sauvegarde_{{ ansible_date_time.epoch }}\n"
+            dest: "{{ répertoire_démo }}/sauvegarde.txt"
+            mode: '0644'
+
+        - name: Étape 2 - Déploiement (peut échouer)
+          ansible.builtin.command:
+            cmd: "{{ 'false' if simuler_echec else 'true' }}"
+          register: résultat_déploiement
+
+        - name: Étape 3 - Validation post-déploiement
+          ansible.builtin.copy:
+            content: "déploiement_réussi={{ ansible_date_time.date }}\n"
+            dest: "{{ répertoire_démo }}/statut.txt"
+            mode: '0644'
+
+      rescue:
+        - name: Gestion d'erreur - Notification
+          ansible.builtin.debug:
+            msg: "❌ Échec du déploiement détecté ! Déclenchement du rollback..."
+
+        - name: Rollback - Restauration depuis la sauvegarde
+          ansible.builtin.copy:
+            content: "rollback_effectué={{ ansible_date_time.date }}\n"
+            dest: "{{ répertoire_démo }}/statut.txt"
+            mode: '0644'
+
+        - name: Marquer l'échec
+          ansible.builtin.fail:
+            msg: "Déploiement échoué et rollback effectué. Vérifier les logs."
+
+      always:
+        - name: Nettoyage et rapport final (toujours exécuté)
+          ansible.builtin.debug:
+            msg: "📊 Déploiement terminé - statut dans {{ répertoire_démo }}/statut.txt"
+
+        - name: Horodatage de fin
+          ansible.builtin.copy:
+            content: "fin={{ ansible_date_time.iso8601 }}\n"
+            dest: "{{ répertoire_démo }}/fin.txt"
+            mode: '0644'

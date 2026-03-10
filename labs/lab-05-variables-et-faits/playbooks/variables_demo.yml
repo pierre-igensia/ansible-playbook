@@ -1,0 +1,72 @@
+---
+- name: Démonstration des variables Ansible
+  hosts: local
+  gather_facts: true
+  vars:
+    # Variables définies dans le play
+    projet: "demo-ansible"
+    version: "1.0"
+    environnements:
+      - développement
+      - staging
+      - production
+    config:
+      port: 8080
+      debug: true
+      log_level: "INFO"
+  vars_files:
+    - ../vars/app_config.yml
+
+  tasks:
+    - name: Afficher les variables simples
+      ansible.builtin.debug:
+        msg: "Projet: {{ projet }}, Version: {{ version }}"
+
+    - name: Afficher une liste de variables
+      ansible.builtin.debug:
+        msg: "Environnements disponibles: {{ environnements | join(', ') }}"
+
+    - name: Afficher un dictionnaire
+      ansible.builtin.debug:
+        msg: "Port: {{ config.port }}, Debug: {{ config.debug }}"
+
+    - name: Afficher les variables de vars_files
+      ansible.builtin.debug:
+        msg: "App: {{ app_name }} v{{ app_version }} sur le port {{ app_port }}"
+
+    - name: Afficher des facts système
+      ansible.builtin.debug:
+        msg: |
+          Système: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Architecture: {{ ansible_architecture }}
+          Hostname: {{ ansible_hostname }}
+          IP: {{ ansible_default_ipv4.address | default('N/A') }}
+          RAM: {{ ansible_memtotal_mb }} MB
+          CPUs: {{ ansible_processor_vcpus }}
+
+    - name: Créer un rapport système
+      ansible.builtin.copy:
+        content: |
+          # Rapport Système - {{ ansible_date_time.date }}
+
+          ## Informations générales
+          - Hostname: {{ ansible_hostname }}
+          - OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          - Kernel: {{ ansible_kernel }}
+          - Architecture: {{ ansible_architecture }}
+
+          ## Ressources
+          - RAM totale: {{ ansible_memtotal_mb }} MB
+          - CPUs: {{ ansible_processor_vcpus }}
+
+          ## Application
+          - Nom: {{ app_name }}
+          - Version: {{ app_version }}
+          - Port: {{ app_port }}
+          - Environnement: {{ app_environment }}
+        dest: /tmp/rapport_systeme.txt
+        mode: '0644'
+
+    - name: Afficher le chemin du rapport
+      ansible.builtin.debug:
+        msg: "Rapport créé: /tmp/rapport_systeme.txt"

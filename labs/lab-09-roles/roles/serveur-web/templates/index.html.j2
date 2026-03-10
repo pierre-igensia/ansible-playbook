@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ serveur_web_nom }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    .badge { background: #2ecc71; color: white; padding: 5px 10px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Bienvenue sur <em>{{ serveur_web_nom }}</em></h1>
+  <p>Version : <span class="badge">{{ serveur_web_version }}</span></p>
+  <p>Déployé le : <strong>{{ ansible_date_time.date }}</strong> à <strong>{{ ansible_date_time.time }}</strong></p>
+  <p>Hébergé sur : <code>{{ ansible_hostname }}</code> ({{ ansible_default_ipv4.address | default('127.0.0.1') }})</p>
+  <p>Contact : <a href="mailto:{{ serveur_web_admin_email }}">{{ serveur_web_admin_email }}</a></p>
+  {% if serveur_web_activer_ssl %}
+  <p>🔒 SSL activé</p>
+  {% else %}
+  <p>⚠️ SSL non activé</p>
+  {% endif %}
+</body>
+</html>

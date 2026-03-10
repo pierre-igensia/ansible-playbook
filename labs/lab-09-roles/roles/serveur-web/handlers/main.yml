@@ -1,0 +1,6 @@
+---
+# Handlers du rôle serveur-web
+
+- name: Recharger le serveur web
+  ansible.builtin.debug:
+    msg: "🔄 Rechargement du serveur web {{ serveur_web_nom }}..."

@@ -1,0 +1,24 @@
+---
+# Tâches de validation - incluses dynamiquement après les autres
+- name: Vérifier que le répertoire existe
+  ansible.builtin.stat:
+    path: "{{ app_repertoire }}"
+  register: statut_repertoire
+
+- name: Vérifier que la configuration existe
+  ansible.builtin.stat:
+    path: "{{ app_repertoire }}/config/app.conf"
+  register: statut_config
+
+- name: Rapport de validation
+  ansible.builtin.debug:
+    msg: |
+      === Rapport de validation ===
+      Application  : {{ app_nom }} v{{ app_version }}
+      Répertoire   : {{ '✅ OK' if statut_repertoire.stat.exists else '❌ MANQUANT' }}
+      Configuration: {{ '✅ OK' if statut_config.stat.exists else '❌ MANQUANTE' }}
+
+- name: Échouer si la configuration est manquante
+  ansible.builtin.fail:
+    msg: "La configuration est manquante ! Vérifiez les tâches de configuration."
+  when: not statut_config.stat.exists

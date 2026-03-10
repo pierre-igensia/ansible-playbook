@@ -1,0 +1,35 @@
+---
+# Tâches principales du rôle serveur-web
+
+- name: Créer les répertoires du serveur web
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ serveur_web_repertoires }}"
+
+- name: Créer le répertoire de logs
+  ansible.builtin.file:
+    path: "{{ serveur_web_fichiers_log }}"
+    state: directory
+    mode: '0750'
+
+- name: Déployer la page d'accueil
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ serveur_web_racine }}/index.html"
+    mode: '0644'
+  notify: Recharger le serveur web
+
+- name: Déployer la configuration
+  ansible.builtin.template:
+    src: serveur.conf.j2
+    dest: "{{ serveur_web_racine }}/serveur.conf"
+    mode: '0640'
+  notify: Recharger le serveur web
+
+- name: Créer le fichier de version
+  ansible.builtin.copy:
+    content: "{{ serveur_web_version }}\n"
+    dest: "{{ serveur_web_racine }}/VERSION"
+    mode: '0644'

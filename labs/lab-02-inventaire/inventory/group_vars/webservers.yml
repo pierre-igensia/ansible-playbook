@@ -1,0 +1,4 @@
+---
+http_port: 80
+document_root: /var/www/html
+server_software: nginx

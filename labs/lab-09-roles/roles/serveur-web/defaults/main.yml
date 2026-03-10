@@ -1,0 +1,9 @@
+---
+# Variables par défaut du rôle serveur-web
+# Ces valeurs peuvent être surchargées dans le playbook ou l'inventaire
+serveur_web_port: 80
+serveur_web_racine: /tmp/www
+serveur_web_nom: "mon-serveur"
+serveur_web_version: "1.0.0"
+serveur_web_admin_email: "admin@exemple.com"
+serveur_web_activer_ssl: false

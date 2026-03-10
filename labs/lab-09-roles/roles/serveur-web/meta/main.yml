@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  role_name: serveur-web
+  author: formation-ansible
+  description: Rôle de démo pour configurer un serveur web
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - "22.04"
+        - "24.04"
+    - name: Debian
+      versions:
+        - "11"
+        - "12"
+  galaxy_tags:
+    - web
+    - nginx
+    - http
+
+dependencies: []
+# Exemple de dépendance :
+# dependencies:
+#   - role: base-securite
+#     vars:
+#       securite_niveau: standard

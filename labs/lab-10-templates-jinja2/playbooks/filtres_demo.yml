@@ -1,0 +1,98 @@
+---
+- name: Démonstration des filtres et tests Jinja2
+  hosts: local
+  gather_facts: true
+  vars:
+    nombres: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+    mots: ["ansible", "automation", "devops", "linux", "python"]
+    utilisateurs:
+      - nom: alice
+        role: admin
+        actif: true
+      - nom: bob
+        role: dev
+        actif: false
+      - nom: charlie
+        role: admin
+        actif: true
+    config_a:
+      port: 8080
+      debug: false
+    config_b:
+      port: 9090
+      timeout: 30
+      debug: true
+
+  tasks:
+    - name: Créer le répertoire de démo
+      ansible.builtin.file:
+        path: /tmp/jinja2_demo
+        state: directory
+        mode: '0755'
+
+    - name: Filtres sur nombres
+      ansible.builtin.debug:
+        msg:
+          - "Original : {{ nombres }}"
+          - "Trié : {{ nombres | sort }}"
+          - "Unique trié : {{ nombres | unique | sort }}"
+          - "Somme : {{ nombres | sum }}"
+          - "Max : {{ nombres | max }}, Min : {{ nombres | min }}"
+          - "Longueur : {{ nombres | length }}"
+
+    - name: Filtres sur chaînes
+      ansible.builtin.debug:
+        msg:
+          - "Majuscules : {{ mots | map('upper') | list }}"
+          - "Joints : {{ mots | join(' | ') }}"
+          - "Triés : {{ mots | sort }}"
+          - "Filtrés (a*) : {{ mots | select('match', '^a') | list }}"
+
+    - name: Filtres sur dictionnaires et listes d'objets
+      ansible.builtin.debug:
+        msg:
+          - "Admins actifs : {{ utilisateurs | selectattr('role', 'eq', 'admin') | selectattr('actif') | map(attribute='nom') | list }}"
+          - "Tous les noms : {{ utilisateurs | map(attribute='nom') | list }}"
+          - "Config fusionnée : {{ config_a | combine(config_b) }}"
+
+    - name: Tests Jinja2
+      ansible.builtin.debug:
+        msg:
+          - "ansible_hostname est défini : {{ ansible_hostname is defined }}"
+          - "ansible_hostname est une chaîne : {{ ansible_hostname is string }}"
+          - "nombres est itérable : {{ nombres is iterable }}"
+          - "5 est dans nombres : {{ 5 in nombres }}"
+
+    - name: Générer le rapport HTML
+      ansible.builtin.template:
+        src: ../templates/rapport.html.j2
+        dest: /tmp/jinja2_demo/rapport.html
+        mode: '0644'
+
+    - name: Génération de la config nginx
+      ansible.builtin.template:
+        src: ../templates/nginx.conf.j2
+        dest: /tmp/jinja2_demo/nginx.conf
+        mode: '0644'
+      vars:
+        nginx_vhosts:
+          - server_name: "mon-site.exemple.com"
+            port: 80
+            root: /var/www/mon-site
+          - server_name: "api.exemple.com"
+            port: 80
+            root: /var/www/api
+            enable_php: true
+            locations:
+              - path: "/api/v1"
+                proxy_pass: "http://localhost:3000"
+
+    - name: Vérifier les fichiers générés
+      ansible.builtin.command:
+        cmd: ls -la /tmp/jinja2_demo/
+      register: liste_fichiers
+      changed_when: false
+
+    - name: Afficher les fichiers créés
+      ansible.builtin.debug:
+        var: liste_fichiers.stdout_lines

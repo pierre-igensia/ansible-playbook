@@ -1,0 +1,128 @@
+---
+- name: Configuration complète d'un serveur (avec tags)
+  hosts: local
+  gather_facts: true
+  vars:
+    app_dir: /tmp/tags_demo
+    app_name: "demo-tags"
+
+  tasks:
+    # ============================================================
+    # Tag: vérification (always)
+    # ============================================================
+    - name: Vérification préalable du système
+      ansible.builtin.debug:
+        msg: "🔍 Vérification : {{ ansible_distribution }} {{ ansible_distribution_version }}"
+      tags: always
+
+    # ============================================================
+    # Tags: installation
+    # ============================================================
+    - name: Créer le répertoire principal
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: '0755'
+      tags:
+        - installation
+        - répertoires
+
+    - name: Créer les sous-répertoires
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ app_dir }}/config"
+        - "{{ app_dir }}/logs"
+        - "{{ app_dir }}/data"
+      tags:
+        - installation
+        - répertoires
+
+    # ============================================================
+    # Tags: configuration
+    # ============================================================
+    - name: Déployer la configuration principale
+      ansible.builtin.copy:
+        content: |
+          [app]
+          nom={{ app_name }}
+          environnement=production
+          debug=false
+        dest: "{{ app_dir }}/config/app.conf"
+        mode: '0640'
+      tags:
+        - configuration
+        - config-app
+
+    - name: Déployer la configuration de journalisation
+      ansible.builtin.copy:
+        content: |
+          [logs]
+          niveau=INFO
+          répertoire={{ app_dir }}/logs
+          rotation=7jours
+        dest: "{{ app_dir }}/config/logging.conf"
+        mode: '0640'
+      tags:
+        - configuration
+        - config-logs
+
+    # ============================================================
+    # Tags: déploiement
+    # ============================================================
+    - name: Déployer l'application
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          echo "Démarrage de {{ app_name }}..."
+          # Simulation du démarrage de l'application
+        dest: "{{ app_dir }}/start.sh"
+        mode: '0755'
+      tags:
+        - déploiement
+        - application
+
+    # ============================================================
+    # Tags: service
+    # ============================================================
+    - name: Démarrer le service (simulation)
+      ansible.builtin.debug:
+        msg: "🚀 Service {{ app_name }} démarré"
+      tags:
+        - service
+        - démarrage
+
+    # ============================================================
+    # Tags: tests
+    # ============================================================
+    - name: Vérifier que les fichiers existent
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: fichier_stat
+      loop:
+        - "{{ app_dir }}/config/app.conf"
+        - "{{ app_dir }}/start.sh"
+      tags:
+        - tests
+        - validation
+
+    - name: Rapport de validation
+      ansible.builtin.debug:
+        msg: "✅ {{ item.item }} {{ 'existe' if item.stat.exists else '❌ MANQUANT' }}"
+      loop: "{{ fichier_stat.results }}"
+      tags:
+        - tests
+        - validation
+
+    # ============================================================
+    # Tags: never (tâche destructive)
+    # ============================================================
+    - name: Supprimer toutes les données (DESTRUCTIF)
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: absent
+      tags:
+        - never
+        - nettoyage
