@@ -1,0 +1,14 @@
+---
+# Playbook principal utilisant import_playbook
+# Chaque playbook est importé dans l'ordre
+
+- name: "Infrastructure : déploiement initial"
+  ansible.builtin.import_playbook: deploiement.yml
+
+- name: "Vérification finale de l'infrastructure"
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Confirmation finale
+      ansible.builtin.debug:
+        msg: "🎯 Tout le déploiement est terminé avec succès via import_playbook !"

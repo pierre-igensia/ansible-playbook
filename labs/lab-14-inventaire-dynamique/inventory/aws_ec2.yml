@@ -1,0 +1,40 @@
+---
+# Plugin d'inventaire AWS EC2
+# Nécessite : pip install boto3 et la collection amazon.aws
+# ansible-galaxy collection install amazon.aws
+
+plugin: amazon.aws.aws_ec2
+
+# Régions AWS à interroger
+regions:
+  - eu-west-1
+  - eu-west-3
+
+# Filtres sur les instances
+filters:
+  instance-state-name: running
+  "tag:Projet": "formation-ansible"
+
+# Regrouper les hôtes par tags
+keyed_groups:
+  - key: tags.Environnement
+    prefix: env
+    separator: "_"
+  - key: tags.Role
+    prefix: role
+    separator: "_"
+  - key: placement.region
+    prefix: region
+    separator: "_"
+
+# Variables à récupérer
+hostnames:
+  - private-ip-address
+  - tag:Name
+
+# Variables d'hôte à inclure
+compose:
+  ansible_host: private_ip_address
+  ansible_user: "'ubuntu'"
+  instance_type: instance_type
+  zone: placement.availability_zone

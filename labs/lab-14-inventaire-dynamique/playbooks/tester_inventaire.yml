@@ -1,0 +1,31 @@
+---
+- name: Tester l'inventaire dynamique
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: Afficher les informations sur l'hôte courant
+      ansible.builtin.debug:
+        msg: |
+          Hôte : {{ inventory_hostname }}
+          Groupes : {{ group_names | join(', ') }}
+
+    - name: Tester le script d'inventaire dynamique
+      ansible.builtin.command:
+        cmd: python3 ../inventory/inventaire_dynamique.py --list
+      register: resultat_inventaire
+      changed_when: false
+
+    - name: Afficher un extrait de l'inventaire
+      ansible.builtin.debug:
+        msg: "Inventaire dynamique chargé avec succès"
+
+    - name: Vérifier un hôte spécifique
+      ansible.builtin.command:
+        cmd: "python3 ../inventory/inventaire_dynamique.py --host web01.exemple.com"
+      register: vars_hote
+      changed_when: false
+
+    - name: Afficher les variables de l'hôte
+      ansible.builtin.debug:
+        var: vars_hote.stdout | from_json
