@@ -89,6 +89,26 @@ ansible localhost -m ping
 ansible localhost -m setup -a "filter=ansible_os_family"
 ```
 
+### Exercice 4 – Premier playbook
+**But :** Exécuter un playbook Ansible plutôt qu'une commande ad-hoc.
+**Instructions :**
+1. Observer le contenu du playbook : `cat playbooks/ping.yml`
+2. Exécuter : `ansible-playbook playbooks/ping.yml`
+3. Comparer la sortie avec celle de l'exercice 2
+
+**Résultat attendu :**
+```
+PLAY [Premier playbook - Test de connectivité] *********************************
+
+TASK [Tester la connectivité avec le module ping] ******************************
+ok: [localhost]
+
+TASK [Afficher un message de bienvenue] ****************************************
+ok: [localhost]
+```
+
+> **Différence clé :** une commande ad-hoc (`ansible ... -m ping`) exécute un seul module. Un playbook (`ansible-playbook`) orchestre plusieurs tâches dans un ordre défini.
+
 ## 🔍 Pour aller plus loin
 - [Documentation officielle Ansible](https://docs.ansible.com/ansible/latest/index.html)
 - [Module ping](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html)
