@@ -80,7 +80,7 @@ ansible --version
 Vous devriez obtenir une sortie similaire à :
 
 ```
-ansible [core 2.17.x]
+ansible [core 2.1x.x]  # version stable la plus récente
   config file = /chemin/vers/le/depot/ansible.cfg
   configured module search path = [...]
   ansible python module location = ...
