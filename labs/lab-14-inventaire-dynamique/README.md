@@ -227,8 +227,8 @@ python3 inventory/inventaire_dynamique.py --host web01.exemple.com
 ansible-inventory -i inventory/inventaire_dynamique.py --list
 ansible-inventory -i inventory/inventaire_dynamique.py --graph
 
-# Exécuter le playbook de test
-ansible-playbook -i inventory/hosts.ini playbooks/tester_inventaire.yml
+# Exécuter le playbook de test (utilise l'inventaire local pour la connexion)
+ansible-playbook -i inventory/inventaire_dynamique.py playbooks/tester_inventaire.yml
 ```
 
 ## 🔍 Pour aller plus loin

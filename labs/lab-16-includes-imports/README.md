@@ -80,8 +80,10 @@ find . -type f | sort
   ansible.builtin.import_playbook: playbooks/application.yml
 
 - name: "Étape 3 : Vérification"
-  ansible.builtin.import_playbook: playbooks/verification.yml
+  ansible.builtin.import_playbook: playbooks/validation_finale.yml
 ```
+
+> **Note** : Dans ce lab, le fichier `site.yml` importe `deploiement.yml` qui contient déjà les trois phases (installation, configuration, validation). La structure ci-dessus illustre le principe général avec plusieurs fichiers séparés.
 
 Avantages :
 - Un seul point d'entrée (`site.yml`)
