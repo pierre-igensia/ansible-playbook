@@ -35,7 +35,7 @@
 
           --- Composants ---
           {% for check in checks.results %}
-          {{ check.item.nom | ljust(18) }}: {{ '✅ OK' if check.stat.exists else '❌ ABSENT' }}
+          {{ check.item.nom }}: {{ '✅ OK' if check.stat.exists else '❌ ABSENT' }}
           {% endfor %}
 
           === Résultat : {{ 'SUCCÈS' if checks.results[:3] | map(attribute='stat.exists') | list is all else 'ÉCHEC' }} ===

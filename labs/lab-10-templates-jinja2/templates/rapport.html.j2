@@ -50,6 +50,7 @@
   </table>
 
   <h2>Points de montage</h2>
+{% if ansible_mounts is defined %}
   <table>
     <thead><tr><th>Point de montage</th><th>Système de fichiers</th><th>Taille</th><th>Utilisé</th><th>Libre</th></tr></thead>
     <tbody>
@@ -64,5 +65,8 @@
 {% endfor %}
     </tbody>
   </table>
+{% else %}
+  <p><em>Information de montage non disponible sur ce système.</em></p>
+{% endif %}
 </body>
 </html>

@@ -12,7 +12,7 @@
         msg: >
           OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
           | Kernel : {{ ansible_kernel }}
-          | CPU : {{ ansible_processor_count }} processeur(s)
+          | CPU : {{ ansible_processor_count | default(ansible_processor_vcpus) }} processeur(s)
           | RAM : {{ ansible_memtotal_mb }} Mo
 
     - name: Afficher l'adresse IP

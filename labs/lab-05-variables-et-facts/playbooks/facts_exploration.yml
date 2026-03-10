@@ -11,16 +11,22 @@
     - name: Facts de montage disque
       ansible.builtin.debug:
         var: ansible_mounts
+      when: ansible_mounts is defined
 
     - name: Utiliser set_fact pour créer des variables dynamiques
       ansible.builtin.set_fact:
         disk_usage_pct: "{{ ((ansible_mounts[0].size_total - ansible_mounts[0].size_available) / ansible_mounts[0].size_total * 100) | round(2) }}"
-      when: ansible_mounts | length > 0
+      when: ansible_mounts is defined and ansible_mounts | length > 0
 
     - name: Afficher l'utilisation disque
       ansible.builtin.debug:
         msg: "Utilisation disque ({{ ansible_mounts[0].mount }}): {{ disk_usage_pct }}%"
-      when: disk_usage_pct is defined
+      when: ansible_mounts is defined and disk_usage_pct is defined
+
+    - name: Info disque non disponible (macOS)
+      ansible.builtin.debug:
+        msg: "ansible_mounts n'est pas disponible sur ce système ({{ ansible_os_family }})"
+      when: ansible_mounts is not defined
 
     - name: Facts personnalisés avec set_fact
       ansible.builtin.set_fact:

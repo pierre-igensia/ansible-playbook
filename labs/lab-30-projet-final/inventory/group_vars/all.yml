@@ -7,6 +7,7 @@ projet_racine: /tmp/projet-final
 # Base de données
 db_nom: "appdb"
 db_utilisateur: "appuser"
+db_mot_de_passe: "changez-moi"
 db_port: 5432
 
 # Application

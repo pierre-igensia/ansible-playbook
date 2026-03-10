@@ -3,12 +3,12 @@
   hosts: local
   gather_facts: false
   vars:
-    répertoire_démo: /tmp/erreurs_demo
+    repertoire_demo: /tmp/erreurs_demo
 
   tasks:
     - name: Créer le répertoire de démo
       ansible.builtin.file:
-        path: "{{ répertoire_démo }}"
+        path: "{{ repertoire_demo }}"
         state: directory
         mode: '0755'
 
@@ -17,23 +17,23 @@
       ansible.builtin.command:
         cmd: "cat /fichier_inexistant_12345"
       ignore_errors: true
-      register: résultat_echec
+      register: resultat_echec
 
     - name: Afficher le résultat de la commande échouée
       ansible.builtin.debug:
-        msg: "Commande échouée avec RC={{ résultat_echec.rc }} - mais on continue !"
+        msg: "Commande échouée avec RC={{ resultat_echec.rc }} - mais on continue !"
 
     # Exemple 2 : failed_when personnalisé
     - name: Vérification avec failed_when
       ansible.builtin.command:
         cmd: "echo 'STATUT: OK'"
-      register: vérification
-      failed_when: "'ERREUR' in vérification.stdout"
+      register: verification
+      failed_when: "'ERREUR' in verification.stdout"
       changed_when: false
 
     - name: Résultat de la vérification
       ansible.builtin.debug:
-        msg: "Vérification réussie : {{ vérification.stdout }}"
+        msg: "Vérification réussie : {{ verification.stdout }}"
 
     # Exemple 3 : failed_when qui déclencherait un échec
     - name: Simulation d'un statut d'erreur (ignorée pour la démo)
@@ -48,12 +48,12 @@
     - name: Script idempotent (jamais marqué changed)
       ansible.builtin.command:
         cmd: "date"
-      register: date_résultat
+      register: date_resultat
       changed_when: false
 
     - name: Afficher la date
       ansible.builtin.debug:
-        msg: "Date actuelle : {{ date_résultat.stdout }}"
+        msg: "Date actuelle : {{ date_resultat.stdout }}"
 
     - name: Résumé des démonstrations
       ansible.builtin.debug:

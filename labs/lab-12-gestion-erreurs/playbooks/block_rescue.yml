@@ -1,15 +1,15 @@
 ---
 - name: Démonstration de block/rescue/always
   hosts: local
-  gather_facts: false
+  gather_facts: true
   vars:
-    répertoire_démo: /tmp/erreurs_demo
+    repertoire_demo: /tmp/erreurs_demo
     simuler_echec: false
 
   tasks:
     - name: Créer le répertoire de démo
       ansible.builtin.file:
-        path: "{{ répertoire_démo }}"
+        path: "{{ repertoire_demo }}"
         state: directory
         mode: '0755'
 
@@ -19,29 +19,29 @@
         - name: Étape 1 - Sauvegarde
           ansible.builtin.copy:
             content: "sauvegarde_{{ ansible_date_time.epoch }}\n"
-            dest: "{{ répertoire_démo }}/sauvegarde.txt"
+            dest: "{{ repertoire_demo }}/sauvegarde.txt"
             mode: '0644'
 
         - name: Étape 2 - Déploiement (peut échouer)
           ansible.builtin.command:
             cmd: "{{ 'false' if simuler_echec else 'true' }}"
-          register: résultat_déploiement
+          register: resultat_deploiement
 
         - name: Étape 3 - Validation post-déploiement
           ansible.builtin.copy:
-            content: "déploiement_réussi={{ ansible_date_time.date }}\n"
-            dest: "{{ répertoire_démo }}/statut.txt"
+            content: "deploiement_reussi={{ ansible_date_time.date }}\n"
+            dest: "{{ repertoire_demo }}/statut.txt"
             mode: '0644'
 
       rescue:
         - name: Gestion d'erreur - Notification
           ansible.builtin.debug:
-            msg: "❌ Échec du déploiement détecté ! Déclenchement du rollback..."
+            msg: "Échec du déploiement détecté ! Déclenchement du rollback..."
 
         - name: Rollback - Restauration depuis la sauvegarde
           ansible.builtin.copy:
-            content: "rollback_effectué={{ ansible_date_time.date }}\n"
-            dest: "{{ répertoire_démo }}/statut.txt"
+            content: "rollback_effectue={{ ansible_date_time.date }}\n"
+            dest: "{{ repertoire_demo }}/statut.txt"
             mode: '0644'
 
         - name: Marquer l'échec
@@ -51,10 +51,10 @@
       always:
         - name: Nettoyage et rapport final (toujours exécuté)
           ansible.builtin.debug:
-            msg: "📊 Déploiement terminé - statut dans {{ répertoire_démo }}/statut.txt"
+            msg: "Déploiement terminé - statut dans {{ repertoire_demo }}/statut.txt"
 
         - name: Horodatage de fin
           ansible.builtin.copy:
             content: "fin={{ ansible_date_time.iso8601 }}\n"
-            dest: "{{ répertoire_démo }}/fin.txt"
+            dest: "{{ repertoire_demo }}/fin.txt"
             mode: '0644'

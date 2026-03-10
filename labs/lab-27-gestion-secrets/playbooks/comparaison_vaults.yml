@@ -47,10 +47,10 @@
           # Dans un playbook
           vars:
             db_password: >-
-              {{ lookup('community.hashi_vault.hashi_vault',
+              {%raw%}{{ lookup('community.hashi_vault.hashi_vault',
                  'secret/data/database password',
                  url='http://vault:8200',
-                 token='mon-token') }}
+                 token='mon-token') }}{%endraw%}
 
     - name: "☁️ Exemple : AWS Secrets Manager (lookup)"
       ansible.builtin.debug:
@@ -58,6 +58,6 @@
           # Dans un playbook
           vars:
             api_key: >-
-              {{ lookup('amazon.aws.aws_secret',
+              {%raw%}{{ lookup('amazon.aws.aws_secret',
                  'production/api-key',
-                 region='eu-west-1') }}
+                 region='eu-west-1') }}{%endraw%}

@@ -24,7 +24,7 @@
 
     - name: Générer la configuration SSH durcie (simulation)
       ansible.builtin.template:
-        src: sshd_config.j2
+        src: ../templates/sshd_config.j2
         dest: /tmp/securite_demo/ssh/sshd_config
         mode: '0644'
 
