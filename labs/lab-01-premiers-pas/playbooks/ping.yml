@@ -1,0 +1,12 @@
+---
+- name: Premier playbook - Test de connectivité
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: Tester la connectivité avec le module ping
+      ansible.builtin.ping:
+
+    - name: Afficher un message de bienvenue
+      ansible.builtin.debug:
+        msg: "Bienvenue dans la série de labs Ansible ! 🎉"

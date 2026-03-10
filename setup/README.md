@@ -150,4 +150,4 @@ uv pip install -r requirements.txt
 
 Une fois votre environnement prêt, commencez par le premier lab :
 
-👉 **[Lab 01 – Premiers pas avec Ansible](../lab-01/)**
+👉 **[Lab 01 – Premiers pas avec Ansible](../labs/lab-01-premiers-pas/)**

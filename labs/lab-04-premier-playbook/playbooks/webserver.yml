@@ -1,0 +1,60 @@
+---
+- name: Installation et configuration d'un serveur web
+  hosts: local
+  become: false
+  vars:
+    app_name: "mon-application"
+    app_dir: "/tmp/{{ app_name }}"
+    app_version: "1.0.0"
+
+  tasks:
+    - name: Créer le répertoire de l'application
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Créer le fichier de configuration
+      ansible.builtin.copy:
+        content: |
+          # Configuration de {{ app_name }}
+          version={{ app_version }}
+          environment=development
+        dest: "{{ app_dir }}/config.ini"
+        mode: '0644'
+
+    - name: Vérifier que le répertoire existe
+      ansible.builtin.stat:
+        path: "{{ app_dir }}"
+      register: app_dir_stat
+
+    - name: Afficher le statut
+      ansible.builtin.debug:
+        msg: >
+          Application '{{ app_name }}' v{{ app_version }} :
+          répertoire {{ 'existe' if app_dir_stat.stat.exists else 'manquant' }}
+
+    - name: Créer un fichier index.html
+      ansible.builtin.copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head><title>{{ app_name }}</title></head>
+          <body>
+            <h1>Bienvenue sur {{ app_name }}</h1>
+            <p>Version: {{ app_version }}</p>
+            <p>Déployé par Ansible</p>
+          </body>
+          </html>
+        dest: "{{ app_dir }}/index.html"
+        mode: '0644'
+
+    - name: Lister le contenu du répertoire
+      ansible.builtin.command:
+        cmd: "ls -la {{ app_dir }}"
+      register: dir_listing
+      changed_when: false
+
+    - name: Afficher le contenu
+      ansible.builtin.debug:
+        var: dir_listing.stdout_lines

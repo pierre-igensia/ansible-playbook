@@ -1,0 +1,4 @@
+---
+ntp_server: pool.ntp.org
+timezone: Europe/Paris
+admin_email: admin@exemple.com
