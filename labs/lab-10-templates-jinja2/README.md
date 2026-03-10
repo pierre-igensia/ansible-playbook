@@ -77,7 +77,7 @@ Les macros sont des fonctions réutilisables dans les templates.
 
 ## ✅ Validation
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/filtres_demo.yml
+ansible-playbook playbooks/filtres_demo.yml
 cat /tmp/jinja2_demo/nginx.conf
 cat /tmp/jinja2_demo/rapport.html
 ```
@@ -111,6 +111,6 @@ cat /tmp/jinja2_demo/rapport.html
 
 ### Solution Exercice 2
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/nginx_config.yml
+ansible-playbook playbooks/nginx_config.yml
 ```
 </details>

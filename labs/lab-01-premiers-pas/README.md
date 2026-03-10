@@ -56,8 +56,8 @@ ansible [core 2.16.x]
 ### Exercice 2 – Premier ping sur localhost
 **But :** Exécuter une commande Ansible sur localhost.
 **Instructions :**
-1. Utiliser l'inventaire `inventory/hosts.ini`
-2. Exécuter : `ansible localhost -m ping -i inventory/hosts.ini`
+1. Utiliser l'inventaire `inventory/mononode.yml`
+2. Exécuter : `ansible localhost -m ping`
 3. Observer la sortie JSON
 
 **Résultat attendu :**
@@ -71,7 +71,7 @@ localhost | SUCCESS => {
 ### Exercice 3 – Informations système
 **But :** Récupérer des informations sur le système local.
 **Instructions :**
-1. Exécuter : `ansible localhost -m setup -i inventory/hosts.ini | head -50`
+1. Exécuter : `ansible localhost -m setup | head -50`
 2. Identifier votre système d'exploitation et sa version
 3. Trouver l'adresse IP de votre machine
 
@@ -83,10 +83,10 @@ localhost | SUCCESS => {
 ansible --version | head -1
 
 # Vérifier le ping sur localhost
-ansible localhost -m ping -i inventory/hosts.ini
+ansible localhost -m ping
 
 # Lister les faits système
-ansible localhost -m setup -i inventory/hosts.ini -a "filter=ansible_os_family"
+ansible localhost -m setup -a "filter=ansible_os_family"
 ```
 
 ## 🔍 Pour aller plus loin
@@ -111,15 +111,15 @@ ansible --version
 ### Solution Exercice 2
 ```bash
 # Créer le fichier d'inventaire si nécessaire
-cat inventory/hosts.ini
+cat inventory/mononode.yml
 
 # Exécuter le ping
-ansible localhost -m ping -i inventory/hosts.ini
+ansible localhost -m ping
 ```
 
 ### Solution Exercice 3
 ```bash
 # Obtenir les facts filtrés
-ansible localhost -m setup -i inventory/hosts.ini -a "filter=ansible_distribution*"
+ansible localhost -m setup -a "filter=ansible_distribution*"
 ```
 </details>

@@ -28,10 +28,10 @@
 cd labs/lab-08-gestion-fichiers
 
 # Vérifier l'inventaire
-cat inventory/hosts.ini
+cat inventory/mononode.yml
 
 # Tester la connectivité
-ansible -i inventory/hosts.ini local -m ping
+ansible local -m ping
 ```
 
 ---
@@ -303,7 +303,7 @@ Le module `fetch` copie des fichiers **depuis** les hôtes gérés **vers** la m
 1. Exécutez le playbook de démonstration :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/fichiers_demo.yml
+ansible-playbook playbooks/fichiers_demo.yml
 ```
 
 2. Vérifiez la structure créée :
@@ -393,7 +393,7 @@ Créez `playbooks/copie_demo.yml` qui déploie plusieurs fichiers :
 1. Exécutez le playbook de démonstration et observez comment `lineinfile` et `blockinfile` modifient le fichier généré par le template :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/fichiers_demo.yml
+ansible-playbook playbooks/fichiers_demo.yml
 cat /tmp/fichiers_demo/config/app.conf
 ```
 
@@ -462,7 +462,7 @@ cat templates/app.conf.j2
 2. Observez la génération dans `fichiers_demo.yml` :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/fichiers_demo.yml
+ansible-playbook playbooks/fichiers_demo.yml
 cat /tmp/fichiers_demo/config/app.conf
 ```
 
@@ -546,7 +546,7 @@ server {
 
 ```bash
 # 1. Le playbook principal s'exécute sans erreur
-ansible-playbook -i inventory/hosts.ini playbooks/fichiers_demo.yml
+ansible-playbook playbooks/fichiers_demo.yml
 
 # 2. Vérifier la structure de répertoires créée
 find /tmp/fichiers_demo -ls

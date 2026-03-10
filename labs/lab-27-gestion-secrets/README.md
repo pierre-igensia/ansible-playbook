@@ -117,7 +117,7 @@ cat playbooks/vault_hashicorp.yml
 
 4. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/vault_hashicorp.yml
+ansible-playbook playbooks/vault_hashicorp.yml
 ```
 
 **Résultat attendu :** Le secret est lu depuis Vault et utilisé dans le playbook.
@@ -137,7 +137,7 @@ cat playbooks/comparaison_vaults.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/comparaison_vaults.yml
+ansible-playbook playbooks/comparaison_vaults.yml
 ```
 
 **Résultat attendu :** Compréhension des avantages/inconvénients de chaque approche.
@@ -175,7 +175,7 @@ curl -X POST -H "X-Vault-Token: formation-token" \
   http://localhost:8200/v1/secret/data/database
 
 # Exécuter le playbook
-ansible-playbook -i inventory/mononode.yml playbooks/vault_hashicorp.yml
+ansible-playbook playbooks/vault_hashicorp.yml
 
 # Nettoyer
 docker stop vault-dev && docker rm vault-dev

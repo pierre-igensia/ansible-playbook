@@ -185,13 +185,13 @@ Identifiez :
 Exécutez le playbook de test :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml
+ansible-playbook playbooks/test_modules.yml
 ```
 
 Puis exécutez-le une deuxième fois pour vérifier l'idempotence :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml
+ansible-playbook playbooks/test_modules.yml
 ```
 
 **Attendu** : La deuxième exécution affiche `changed=0` pour les tâches déjà exécutées.
@@ -207,13 +207,13 @@ Testez le module en mode check (simulation sans modification) :
 rm -f /tmp/modules_demo/config.ini
 
 # Simuler sans modifier
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml --check
+ansible-playbook playbooks/test_modules.yml --check
 
 # Vérifier que le fichier n'a PAS été créé
 ls /tmp/modules_demo/config.ini 2>/dev/null || echo "Fichier non créé (comportement attendu)"
 
 # Exécuter réellement
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml
+ansible-playbook playbooks/test_modules.yml
 ```
 
 ---
@@ -298,7 +298,7 @@ cat > /tmp/test_service.yml << 'EOF'
         msg: "{{ r.message }}"
 EOF
 
-ansible-playbook -i inventory/hosts.ini /tmp/test_service.yml
+ansible-playbook /tmp/test_service.yml
 ```
 
 ## ✅ Validation
@@ -308,13 +308,13 @@ ansible-playbook -i inventory/hosts.ini /tmp/test_service.yml
 ansible-doc -M library/ gestion_ini
 
 # Exécuter les tests (idempotence vérifiée automatiquement)
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml
+ansible-playbook playbooks/test_modules.yml
 
 # Vérifier le fichier INI créé
 cat /tmp/modules_demo/config.ini
 
 # Tester le mode check
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml --check
+ansible-playbook playbooks/test_modules.yml --check
 ```
 
 ## 🔍 Pour aller plus loin
@@ -355,7 +355,7 @@ ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml --check
 
 ```bash
 rm -f /tmp/modules_demo/config.ini
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml --check
+ansible-playbook playbooks/test_modules.yml --check
 # Résultat : changed=X (simulé), fichier non créé
 
 ls /tmp/modules_demo/config.ini 2>/dev/null \
@@ -390,7 +390,7 @@ if modifie:
 Puis testez avec `--diff` :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/test_modules.yml --diff
+ansible-playbook playbooks/test_modules.yml --diff
 ```
 
 </details>

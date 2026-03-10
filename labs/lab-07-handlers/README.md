@@ -27,10 +27,10 @@
 cd labs/lab-07-handlers
 
 # Vérifier l'inventaire
-cat inventory/hosts.ini
+cat inventory/mononode.yml
 
 # Tester la connectivité
-ansible -i inventory/hosts.ini local -m ping
+ansible local -m ping
 ```
 
 ---
@@ -187,7 +187,7 @@ Si une tâche ne génère **pas de changement** (statut `ok`), le handler associ
 1. Exécutez le playbook de démonstration :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_demo.yml
+ansible-playbook playbooks/handlers_demo.yml
 ```
 
 2. Observez l'ordre d'exécution : les handlers s'exécutent **après** les tâches normales.
@@ -195,7 +195,7 @@ ansible-playbook -i inventory/hosts.ini playbooks/handlers_demo.yml
 3. Ré-exécutez le playbook immédiatement :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_demo.yml
+ansible-playbook playbooks/handlers_demo.yml
 ```
 
 **Question** : Pourquoi les handlers ne se déclenchent-ils pas lors de la deuxième exécution ?
@@ -313,10 +313,10 @@ Vérifiez que les **trois handlers** s'exécutent avec un seul `notify`.
 
 ```bash
 # Première exécution : changed → handlers déclenchés
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_advanced.yml
+ansible-playbook playbooks/handlers_advanced.yml
 
 # Deuxième exécution : ok → handlers PAS déclenchés
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_advanced.yml
+ansible-playbook playbooks/handlers_advanced.yml
 ```
 
 3. Créez `playbooks/flush_demo.yml` pour démontrer l'utilité de `flush_handlers` :
@@ -365,14 +365,14 @@ ansible-playbook -i inventory/hosts.ini playbooks/handlers_advanced.yml
 
 ```bash
 # 1. Premier passage : les handlers se déclenchent
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_demo.yml
+ansible-playbook playbooks/handlers_demo.yml
 
 # 2. Deuxième passage : les handlers NE se déclenchent PAS (idempotence)
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_demo.yml
+ansible-playbook playbooks/handlers_demo.yml
 
 # 3. Vérifier l'idempotence du playbook advanced
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_advanced.yml
-ansible-playbook -i inventory/hosts.ini playbooks/handlers_advanced.yml
+ansible-playbook playbooks/handlers_advanced.yml
+ansible-playbook playbooks/handlers_advanced.yml
 
 # 4. Nettoyer les fichiers de démo
 rm -rf /tmp/handlers_demo

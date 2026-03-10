@@ -103,7 +103,7 @@ cat playbooks/delegation_demo.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/delegation_demo.yml
+ansible-playbook playbooks/delegation_demo.yml
 ```
 
 3. Vérifier les fichiers créés localement :
@@ -128,7 +128,7 @@ cat playbooks/run_once_demo.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/run_once_demo.yml
+ansible-playbook playbooks/run_once_demo.yml
 ```
 
 3. Observer que certaines tâches ne s'exécutent qu'une fois.
@@ -150,7 +150,7 @@ cat playbooks/deploiement_delegation.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/deploiement_delegation.yml
+ansible-playbook playbooks/deploiement_delegation.yml
 ```
 
 3. Vérifier les fichiers créés :
@@ -169,11 +169,11 @@ cat /tmp/delegation_demo/post_deploy.log
 rm -rf /tmp/delegation_demo
 
 # Exécuter la démo de délégation
-ansible-playbook -i inventory/mononode.yml playbooks/delegation_demo.yml
+ansible-playbook playbooks/delegation_demo.yml
 cat /tmp/delegation_demo/rapport.txt
 
 # Exécuter le déploiement
-ansible-playbook -i inventory/mononode.yml playbooks/deploiement_delegation.yml
+ansible-playbook playbooks/deploiement_delegation.yml
 ls /tmp/delegation_demo/
 ```
 

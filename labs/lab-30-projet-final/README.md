@@ -127,17 +127,17 @@ done
 
 1. Vérifier la syntaxe :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --syntax-check
+ansible-playbook playbooks/site.yml --syntax-check
 ```
 
 2. Mode check (dry-run) :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --check
+ansible-playbook playbooks/site.yml --check
 ```
 
 3. Déploiement complet :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml
+ansible-playbook playbooks/site.yml
 ```
 
 4. Vérifier les fichiers créés :
@@ -157,17 +157,17 @@ tree /tmp/projet-final/
 
 1. Lister les tags disponibles :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --list-tags
+ansible-playbook playbooks/site.yml --list-tags
 ```
 
 2. Déployer uniquement la base de données :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --tags "database"
+ansible-playbook playbooks/site.yml --tags "database"
 ```
 
 3. Déployer tout sauf le monitoring :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --skip-tags "monitoring"
+ansible-playbook playbooks/site.yml --skip-tags "monitoring"
 ```
 
 **Résultat attendu :** Seuls les composants sélectionnés sont déployés.
@@ -187,7 +187,7 @@ cat playbooks/verification.yml
 
 2. Exécuter la vérification :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/verification.yml
+ansible-playbook playbooks/verification.yml
 ```
 
 3. Consulter le rapport :
@@ -224,16 +224,16 @@ cat /tmp/projet-final/verification/rapport.txt
 
 ```bash
 # Vérifier la syntaxe
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml --syntax-check
+ansible-playbook playbooks/site.yml --syntax-check
 
 # Déploiement complet
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml
+ansible-playbook playbooks/site.yml
 
 # Vérification post-déploiement
-ansible-playbook -i inventory/mononode.yml playbooks/verification.yml
+ansible-playbook playbooks/verification.yml
 
 # Vérifier l'idempotence
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml
+ansible-playbook playbooks/site.yml
 # Aucune tâche ne doit être "changed" à la 2ème exécution
 
 # Consulter le rapport
@@ -255,7 +255,7 @@ cat /tmp/projet-final/verification/rapport.txt
 
 ```bash
 # Déploiement
-ansible-playbook -i inventory/mononode.yml playbooks/site.yml
+ansible-playbook playbooks/site.yml
 
 # Vérification
 tree /tmp/projet-final/

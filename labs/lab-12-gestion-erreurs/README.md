@@ -76,9 +76,9 @@
 
 ## ✅ Validation
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/gestion_erreurs.yml
-ansible-playbook -i inventory/hosts.ini playbooks/block_rescue.yml
-ansible-playbook -i inventory/hosts.ini playbooks/déploiement_sécurisé.yml
+ansible-playbook playbooks/gestion_erreurs.yml
+ansible-playbook playbooks/block_rescue.yml
+ansible-playbook playbooks/déploiement_sécurisé.yml
 ```
 
 ## 🔍 Pour aller plus loin

@@ -120,19 +120,19 @@ cat playbooks/callback_demo.yml
 2. Exécuter avec le plugin timer :
 ```bash
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.timer \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 3. Exécuter avec profile_tasks :
 ```bash
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.profile_tasks \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 4. Combiner les plugins :
 ```bash
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.timer,ansible.posix.profile_tasks \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 **Résultat attendu :** Chaque tâche affiche son temps d'exécution et le total est affiché à la fin.
@@ -148,13 +148,13 @@ ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
 1. Exécuter avec la sortie YAML :
 ```bash
 ANSIBLE_STDOUT_CALLBACK=yaml \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 2. Exécuter avec la sortie JSON :
 ```bash
 ANSIBLE_STDOUT_CALLBACK=json \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml > /tmp/sortie_ansible.json
+ansible-playbook playbooks/callback_demo.yml > /tmp/sortie_ansible.json
 ```
 
 3. Analyser la sortie JSON :
@@ -181,7 +181,7 @@ cat callback_plugins/journal_formation.py
 ```bash
 ANSIBLE_CALLBACK_PLUGINS=./callback_plugins \
 ANSIBLE_CALLBACKS_ENABLED=journal_formation \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 3. Vérifier le journal :
@@ -208,7 +208,7 @@ mkdir -p /tmp/ansible_logs
 ```bash
 ANSIBLE_CALLBACKS_ENABLED=community.general.log_plays \
 ANSIBLE_LOG_FOLDER=/tmp/ansible_logs \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 ```
 
 3. Vérifier les logs :
@@ -224,12 +224,12 @@ cat /tmp/ansible_logs/localhost
 ```bash
 # Tester le profiling
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.profile_tasks \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 
 # Tester le plugin personnalisé
 ANSIBLE_CALLBACK_PLUGINS=./callback_plugins \
 ANSIBLE_CALLBACKS_ENABLED=journal_formation \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 cat /tmp/ansible_journal.log
 ```
 
@@ -249,12 +249,12 @@ cat /tmp/ansible_journal.log
 ```bash
 # Timer uniquement
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.timer \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 # Playbook run took 0 days, 0 hours, 0 minutes, 5 seconds
 
 # Profile tasks
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.profile_tasks \
-ansible-playbook -i inventory/mononode.yml playbooks/callback_demo.yml
+ansible-playbook playbooks/callback_demo.yml
 # Simuler un traitement lent -------- 2.05s
 # Collecter des informations -------- 0.45s
 # Créer un fichier de test ---------- 0.12s

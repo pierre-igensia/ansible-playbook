@@ -190,7 +190,7 @@ Exécutez le playbook de démonstration avec le fichier de secrets (en clair pou
 
 ```bash
 # Exécuter le playbook (secrets en clair pour la démo)
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml
+ansible-playbook playbooks/vault_demo.yml
 
 # Vérifier le fichier de configuration créé
 cat /tmp/vault_demo/app.conf
@@ -203,7 +203,7 @@ Ensuite, chiffrez le fichier de secrets et ré-exécutez avec `--ask-vault-pass`
 ansible-vault encrypt vars/secrets.yml
 
 # Ré-exécuter avec le mot de passe vault
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml --ask-vault-pass
+ansible-playbook playbooks/vault_demo.yml --ask-vault-pass
 
 # Déchiffrer pour la suite des exercices
 ansible-vault decrypt vars/secrets.yml
@@ -224,7 +224,7 @@ chmod 600 .vault_pass
 ansible-vault encrypt --vault-password-file .vault_pass vars/secrets.yml
 
 # 3. Exécuter le playbook sans saisie interactive
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml \
+ansible-playbook playbooks/vault_demo.yml \
   --vault-password-file .vault_pass
 
 # 4. Nettoyer
@@ -238,7 +238,7 @@ rm -f .vault_pass
 
 ```bash
 # Vérifier que le playbook s'exécute correctement (secrets en clair)
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml
+ansible-playbook playbooks/vault_demo.yml
 
 # Vérifier le fichier de configuration créé
 cat /tmp/vault_demo/app.conf
@@ -320,13 +320,13 @@ Playbook de test :
 
 ```bash
 # Exécution initiale (secrets en clair)
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml
+ansible-playbook playbooks/vault_demo.yml
 
 # Chiffrer
 ansible-vault encrypt vars/secrets.yml --ask-vault-pass
 
 # Exécution avec vault
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml --ask-vault-pass
+ansible-playbook playbooks/vault_demo.yml --ask-vault-pass
 
 # Retour en clair pour la suite
 ansible-vault decrypt vars/secrets.yml --ask-vault-pass
@@ -347,7 +347,7 @@ echo ".vault_pass" >> .gitignore
 
 # Chiffrer et exécuter
 ansible-vault encrypt --vault-password-file .vault_pass vars/secrets.yml
-ansible-playbook -i inventory/hosts.ini playbooks/vault_demo.yml \
+ansible-playbook playbooks/vault_demo.yml \
   --vault-password-file .vault_pass
 
 # Nettoyer

@@ -27,10 +27,10 @@
 cd labs/lab-06-conditions-et-boucles
 
 # Vérifier l'inventaire
-cat inventory/hosts.ini
+cat inventory/mononode.yml
 
 # Tester la connectivité
-ansible -i inventory/hosts.ini local -m ping
+ansible local -m ping
 ```
 
 ---
@@ -211,7 +211,7 @@ La boucle `until` répète une tâche jusqu'à ce qu'une condition soit vraie, u
 1. Exécutez le playbook de conditions :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml
+ansible-playbook playbooks/conditions.yml
 ```
 
 2. Observez quelles tâches sont exécutées (status `ok`) et lesquelles sont ignorées (status `skipping`).
@@ -219,7 +219,7 @@ ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml
 3. Modifiez la variable `env` pour observer les changements :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml -e "env=développement"
+ansible-playbook playbooks/conditions.yml -e "env=développement"
 ```
 
 **Questions de réflexion :**
@@ -235,7 +235,7 @@ ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml -e "env=dévelo
 1. Exécutez le playbook de boucles :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/boucles.yml
+ansible-playbook playbooks/boucles.yml
 ```
 
 2. Vérifiez que les fichiers de configuration ont bien été créés :
@@ -335,17 +335,17 @@ Créez un playbook `playbooks/loop_control_demo.yml` qui affiche une barre de pr
 
 ```bash
 # 1. Le playbook conditions.yml s'exécute sans erreur
-ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml
+ansible-playbook playbooks/conditions.yml
 
 # 2. Le playbook boucles.yml crée bien les fichiers attendus
-ansible-playbook -i inventory/hosts.ini playbooks/boucles.yml
+ansible-playbook playbooks/boucles.yml
 ls -la /tmp/nginx.conf /tmp/apache.conf /tmp/mysql.conf
 
 # 3. Vérifier le contenu d'un fichier créé par la boucle
 cat /tmp/nginx.conf
 
 # 4. La condition de surcharge fonctionne
-ansible-playbook -i inventory/hosts.ini playbooks/conditions.yml \
+ansible-playbook playbooks/conditions.yml \
   -e "env=développement"
 ```
 

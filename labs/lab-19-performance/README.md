@@ -137,12 +137,12 @@ cat playbooks/benchmark_forks.yml
 
 2. Exécuter avec les forks par défaut (5) :
 ```bash
-time ansible-playbook -i inventory/mononode.yml playbooks/benchmark_forks.yml -f 5
+time ansible-playbook playbooks/benchmark_forks.yml -f 5
 ```
 
 3. Augmenter les forks :
 ```bash
-time ansible-playbook -i inventory/mononode.yml playbooks/benchmark_forks.yml -f 20
+time ansible-playbook playbooks/benchmark_forks.yml -f 20
 ```
 
 4. Comparer les temps d'exécution.
@@ -164,7 +164,7 @@ cat playbooks/async_demo.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/async_demo.yml
+ansible-playbook playbooks/async_demo.yml
 ```
 
 3. Observer le comportement :
@@ -193,7 +193,7 @@ cat playbooks/cache_demo.yml
 
 3. Première exécution (collecte les faits) :
 ```bash
-time ansible-playbook -i inventory/mononode.yml playbooks/cache_demo.yml
+time ansible-playbook playbooks/cache_demo.yml
 ```
 
 4. Vérifier le cache :
@@ -204,7 +204,7 @@ cat /tmp/ansible_facts_cache/localhost | python3 -m json.tool | head -20
 
 5. Deuxième exécution (utilise le cache, plus rapide) :
 ```bash
-time ansible-playbook -i inventory/mononode.yml playbooks/cache_demo.yml
+time ansible-playbook playbooks/cache_demo.yml
 ```
 
 **Résultat attendu :** La deuxième exécution est plus rapide car les faits sont lus depuis le cache.
@@ -226,7 +226,7 @@ callbacks_enabled = ansible.posix.profile_tasks
 2. Exécuter un playbook :
 ```bash
 ANSIBLE_CALLBACKS_ENABLED=ansible.posix.profile_tasks \
-ansible-playbook -i inventory/mononode.yml playbooks/benchmark_forks.yml
+ansible-playbook playbooks/benchmark_forks.yml
 ```
 
 3. Observer le temps de chaque tâche dans la sortie.
@@ -237,14 +237,14 @@ ansible-playbook -i inventory/mononode.yml playbooks/benchmark_forks.yml
 
 ```bash
 # Tester les forks
-ansible-playbook -i inventory/mononode.yml playbooks/benchmark_forks.yml -f 10
+ansible-playbook playbooks/benchmark_forks.yml -f 10
 
 # Tester async
-ansible-playbook -i inventory/mononode.yml playbooks/async_demo.yml
+ansible-playbook playbooks/async_demo.yml
 
 # Tester le cache
 mkdir -p /tmp/ansible_facts_cache
-ansible-playbook -i inventory/mononode.yml playbooks/cache_demo.yml
+ansible-playbook playbooks/cache_demo.yml
 ls /tmp/ansible_facts_cache/
 ```
 
@@ -301,13 +301,13 @@ export ANSIBLE_CACHE_PLUGIN_TIMEOUT=86400
 
 ```bash
 # Première exécution : collecte les faits
-time ansible-playbook -i inventory/mononode.yml playbooks/cache_demo.yml
+time ansible-playbook playbooks/cache_demo.yml
 
 # Vérifier le cache
 ls /tmp/ansible_facts_cache/
 
 # Deuxième exécution : utilise le cache
-time ansible-playbook -i inventory/mononode.yml playbooks/cache_demo.yml
+time ansible-playbook playbooks/cache_demo.yml
 ```
 
 </details>

@@ -207,7 +207,7 @@ cat playbooks/awx_api_demo.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/awx_api_demo.yml
+ansible-playbook playbooks/awx_api_demo.yml
 ```
 
 **Résultat attendu :** Les concepts d'API AWX sont compris.
@@ -219,7 +219,7 @@ ansible-playbook -i inventory/mononode.yml playbooks/awx_api_demo.yml
 curl -s http://localhost:8043/api/v2/ping/
 
 # Sinon, exécuter la simulation
-ansible-playbook -i inventory/mononode.yml playbooks/awx_api_demo.yml
+ansible-playbook playbooks/awx_api_demo.yml
 ```
 
 ## 🔍 Pour aller plus loin

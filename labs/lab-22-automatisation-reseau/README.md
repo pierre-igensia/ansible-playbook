@@ -133,7 +133,7 @@ cat playbooks/reseau_simulation.yml
 
 3. Exécuter la simulation :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/reseau_simulation.yml
+ansible-playbook playbooks/reseau_simulation.yml
 ```
 
 **Résultat attendu :** Les concepts d'inventaire réseau sont affichés et compris.
@@ -199,7 +199,7 @@ cat playbooks/configuration_reseau.yml
 
 ```bash
 # Exécuter la simulation
-ansible-playbook -i inventory/mononode.yml playbooks/reseau_simulation.yml
+ansible-playbook playbooks/reseau_simulation.yml
 
 # Vérifier les fichiers créés
 ls /tmp/reseau_demo/

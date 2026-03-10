@@ -108,13 +108,13 @@ ansible-playbook site.yml --tags installation --list-tasks
 ## ✅ Validation
 ```bash
 # Lister tous les tags
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --list-tags
+ansible-playbook playbooks/serveur_complet.yml --list-tags
 
 # Exécuter uniquement installation
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --tags installation
+ansible-playbook playbooks/serveur_complet.yml --tags installation
 
 # Exécuter avec skip
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --skip-tags service
+ansible-playbook playbooks/serveur_complet.yml --skip-tags service
 ```
 
 ## 🔍 Pour aller plus loin
@@ -128,19 +128,19 @@ ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --skip-tag
 
 ### Solution Exercice 1
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --list-tags
+ansible-playbook playbooks/serveur_complet.yml --list-tags
 ```
 
 ### Solution Exercice 2
 ```bash
 # Installation uniquement
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --tags installation
+ansible-playbook playbooks/serveur_complet.yml --tags installation
 
 # Configuration uniquement
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --tags configuration
+ansible-playbook playbooks/serveur_complet.yml --tags configuration
 
 # Sans les redémarrages
-ansible-playbook -i inventory/hosts.ini playbooks/serveur_complet.yml --skip-tags service
+ansible-playbook playbooks/serveur_complet.yml --skip-tags service
 ```
 
 ### Solution Exercice 3

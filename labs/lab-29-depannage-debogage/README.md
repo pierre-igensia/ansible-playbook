@@ -118,9 +118,9 @@ ANSIBLE_LOG_PATH=/tmp/ansible.log ansible-playbook site.yml
 
 1. Exécuter le playbook de diagnostic à différents niveaux :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -v
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -vv
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -vvv
+ansible-playbook playbooks/diagnostic.yml -v
+ansible-playbook playbooks/diagnostic.yml -vv
+ansible-playbook playbooks/diagnostic.yml -vvv
 ```
 
 2. Comparer les sorties et noter les informations supplémentaires à chaque niveau.
@@ -142,7 +142,7 @@ cat playbooks/erreurs_a_corriger.yml
 
 2. Exécuter et observer les erreurs :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/erreurs_a_corriger.yml
+ansible-playbook playbooks/erreurs_a_corriger.yml
 ```
 
 3. Identifier et comprendre chaque erreur.
@@ -166,7 +166,7 @@ cat playbooks/validation_assert.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/validation_assert.yml
+ansible-playbook playbooks/validation_assert.yml
 ```
 
 3. Observer les assertions qui passent et celles qui échouent.
@@ -184,7 +184,7 @@ ansible-playbook -i inventory/mononode.yml playbooks/validation_assert.yml
 1. Exécuter avec un fichier de log :
 ```bash
 ANSIBLE_LOG_PATH=/tmp/ansible_debug.log \
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -vv
+ansible-playbook playbooks/diagnostic.yml -vv
 ```
 
 2. Consulter le log :
@@ -198,14 +198,14 @@ cat /tmp/ansible_debug.log
 
 ```bash
 # Diagnostic avec verbosité
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -vv
+ansible-playbook playbooks/diagnostic.yml -vv
 
 # Validation avec assert
-ansible-playbook -i inventory/mononode.yml playbooks/validation_assert.yml
+ansible-playbook playbooks/validation_assert.yml
 
 # Journal de débogage
 ANSIBLE_LOG_PATH=/tmp/ansible_debug.log \
-ansible-playbook -i inventory/mononode.yml playbooks/diagnostic.yml -v
+ansible-playbook playbooks/diagnostic.yml -v
 cat /tmp/ansible_debug.log
 ```
 

@@ -154,10 +154,10 @@ Exécutez le playbook de déploiement qui utilise `import_tasks` :
 
 ```bash
 # Exécuter le playbook
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml
+ansible-playbook playbooks/deploiement.yml
 
 # Lister les tâches (les tâches importées sont visibles car statiques)
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml --list-tasks
+ansible-playbook playbooks/deploiement.yml --list-tasks
 
 # Vérifier le résultat
 ls /tmp/includes_demo/
@@ -203,7 +203,7 @@ Puis créez un playbook qui inclut dynamiquement le bon fichier selon l'OS :
 ```
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/os_specifique.yml
+ansible-playbook playbooks/os_specifique.yml
 ```
 
 ---
@@ -214,13 +214,13 @@ Exécutez le playbook principal `site.yml` qui utilise `import_playbook` :
 
 ```bash
 # Exécuter le playbook site.yml
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml
+ansible-playbook playbooks/site.yml
 
 # Lister toutes les tâches du site complet
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml --list-tasks
+ansible-playbook playbooks/site.yml --list-tasks
 
 # Utiliser les tags (possibles car import est statique)
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml --list-tags
+ansible-playbook playbooks/site.yml --list-tags
 ```
 
 **Attendu** : `site.yml` exécute le déploiement puis la confirmation finale.
@@ -265,7 +265,7 @@ Puis utilisez-le avec `include_tasks` en boucle (impossible avec `import_tasks`)
 ```
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/utilisateurs.yml
+ansible-playbook playbooks/utilisateurs.yml
 ls /tmp/includes_demo/utilisateurs/
 ```
 
@@ -276,7 +276,7 @@ ls /tmp/includes_demo/utilisateurs/
 rm -rf /tmp/includes_demo
 
 # Exécuter le playbook de déploiement
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml
+ansible-playbook playbooks/deploiement.yml
 
 # Vérifier les fichiers créés
 ls -la /tmp/includes_demo/
@@ -284,10 +284,10 @@ ls -la /tmp/includes_demo/config/
 cat /tmp/includes_demo/config/app.conf
 
 # Exécuter le site complet
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml
+ansible-playbook playbooks/site.yml
 
 # Lister les tâches (import_tasks visible, include_tasks non visible au parsing)
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml --list-tasks
+ansible-playbook playbooks/deploiement.yml --list-tasks
 ```
 
 ## 🔍 Pour aller plus loin
@@ -305,10 +305,10 @@ ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml --list-tasks
 
 ```bash
 # Exécution
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml
+ansible-playbook playbooks/deploiement.yml
 
 # Les tâches importées sont visibles car statiques
-ansible-playbook -i inventory/hosts.ini playbooks/deploiement.yml --list-tasks
+ansible-playbook playbooks/deploiement.yml --list-tasks
 # Affiche toutes les tâches de installation.yml, configuration.yml ET validation.yml
 
 # Vérification
@@ -347,7 +347,7 @@ cat > playbooks/os_specifique.yml << 'EOF'
       ansible.builtin.include_tasks: "../tasks/{{ ansible_os_family | lower }}.yml"
 EOF
 
-ansible-playbook -i inventory/hosts.ini playbooks/os_specifique.yml
+ansible-playbook playbooks/os_specifique.yml
 ```
 
 </details>
@@ -429,10 +429,10 @@ vars/
 
 ```bash
 # Déployer en dev
-ansible-playbook -i inventory/hosts.ini site_multi_env.yml -e "environnement=dev"
+ansible-playbook site_multi_env.yml -e "environnement=dev"
 
 # Déployer en production
-ansible-playbook -i inventory/hosts.ini site_multi_env.yml -e "environnement=prod"
+ansible-playbook site_multi_env.yml -e "environnement=prod"
 ```
 
 </details>

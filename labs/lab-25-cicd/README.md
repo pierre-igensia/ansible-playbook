@@ -180,7 +180,7 @@ ansible-lint playbooks/lint_et_test.yml
 pre-commit run --all-files
 
 # Vérifier la syntaxe
-ansible-playbook -i inventory/mononode.yml playbooks/lint_et_test.yml --syntax-check
+ansible-playbook playbooks/lint_et_test.yml --syntax-check
 ```
 
 ## 🔍 Pour aller plus loin

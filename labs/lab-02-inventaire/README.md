@@ -62,7 +62,7 @@ Les répertoires `host_vars/` et `group_vars/` permettent de définir des variab
 
 ```
 inventory/
-├── hosts.ini
+├── mononode.yml
 ├── host_vars/
 │   └── web01.yml      # Variables spécifiques à web01
 └── group_vars/
@@ -85,10 +85,10 @@ inventory/
 ### Exercice 1 – Explorer l'inventaire INI
 **But :** Comprendre la structure d'un inventaire INI et lister ses hôtes.
 **Instructions :**
-1. Ouvrir le fichier `inventory/hosts.ini`
-2. Lister tous les hôtes : `ansible all --list-hosts -i inventory/hosts.ini`
-3. Lister uniquement les serveurs web : `ansible webservers --list-hosts -i inventory/hosts.ini`
-4. Lister le groupe `production` : `ansible production --list-hosts -i inventory/hosts.ini`
+1. Ouvrir le fichier `inventory/mononode.yml`
+2. Lister tous les hôtes : `ansible all --list-hosts`
+3. Lister uniquement les serveurs web : `ansible webservers --list-hosts`
+4. Lister le groupe `production` : `ansible production --list-hosts`
 
 **Questions :**
 - Combien d'hôtes appartiennent au groupe `production` ?
@@ -107,7 +107,7 @@ inventory/
 **But :** Comparer les formats INI et YAML.
 **Instructions :**
 1. Ouvrir `inventory/hosts.yml`
-2. Comparer la structure avec `inventory/hosts.ini`
+2. Comparer la structure avec `inventory/mononode.yml`
 3. Lister les hôtes depuis l'inventaire YAML : `ansible all --list-hosts -i inventory/hosts.yml`
 4. Vérifier que le résultat est identique à celui de l'inventaire INI
 
@@ -143,10 +143,10 @@ inventory/
 ## ✅ Validation
 ```bash
 # Lister tous les hôtes de l'inventaire INI
-ansible all --list-hosts -i inventory/hosts.ini
+ansible all --list-hosts
 
 # Lister les hôtes du groupe webservers
-ansible webservers --list-hosts -i inventory/hosts.ini
+ansible webservers --list-hosts
 
 # Lister les hôtes depuis l'inventaire YAML
 ansible all --list-hosts -i inventory/hosts.yml
@@ -172,13 +172,13 @@ ansible-inventory -i inventory/hosts.yml --host web01
 ### Solution Exercice 1
 ```bash
 # Lister tous les hôtes
-ansible all --list-hosts -i inventory/hosts.ini
+ansible all --list-hosts
 
 # Lister les webservers seulement
-ansible webservers --list-hosts -i inventory/hosts.ini
+ansible webservers --list-hosts
 
 # Lister le groupe production (contient tous les sous-groupes)
-ansible production --list-hosts -i inventory/hosts.ini
+ansible production --list-hosts
 # Réponse : 4 hôtes (web01, web02, db01, lb01)
 # L'hôte 192.168.1.20 est db01
 ```
@@ -186,7 +186,7 @@ ansible production --list-hosts -i inventory/hosts.ini
 ### Solution Exercice 2
 ```bash
 # Les deux commandes donnent le même résultat
-ansible all --list-hosts -i inventory/hosts.ini
+ansible all --list-hosts
 ansible all --list-hosts -i inventory/hosts.yml
 
 # Différences : YAML est plus verbeux mais plus structuré ;

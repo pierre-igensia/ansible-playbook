@@ -140,7 +140,7 @@ cat playbooks/rolling_update.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/rolling_update.yml
+ansible-playbook playbooks/rolling_update.yml
 ```
 
 3. Observer l'exécution par lots.
@@ -162,7 +162,7 @@ cat playbooks/strategies_demo.yml
 
 2. Exécuter avec la stratégie linear :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/strategies_demo.yml
+ansible-playbook playbooks/strategies_demo.yml
 ```
 
 3. Observer les différences de comportement.
@@ -186,7 +186,7 @@ cat inventory/group_vars/all.yml
 
 2. Exécuter le playbook d'inventaire :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/inventaire_demo.yml
+ansible-playbook playbooks/inventaire_demo.yml
 ```
 
 **Résultat attendu :** L'inventaire est structuré et les variables sont correctement héritées.
@@ -195,13 +195,13 @@ ansible-playbook -i inventory/mononode.yml playbooks/inventaire_demo.yml
 
 ```bash
 # Rolling update
-ansible-playbook -i inventory/mononode.yml playbooks/rolling_update.yml
+ansible-playbook playbooks/rolling_update.yml
 
 # Stratégies
-ansible-playbook -i inventory/mononode.yml playbooks/strategies_demo.yml
+ansible-playbook playbooks/strategies_demo.yml
 
 # Inventaire
-ansible-playbook -i inventory/mononode.yml playbooks/inventaire_demo.yml
+ansible-playbook playbooks/inventaire_demo.yml
 ```
 
 ## 🔍 Pour aller plus loin

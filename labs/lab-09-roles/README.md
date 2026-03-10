@@ -85,7 +85,7 @@ ansible-galaxy init mon-role
 **But :** Appeler le rôle depuis un playbook.
 **Instructions :**
 1. Créer `playbooks/site.yml` qui utilise le rôle
-2. Exécuter : `ansible-playbook -i inventory/hosts.ini playbooks/site.yml`
+2. Exécuter : `ansible-playbook playbooks/site.yml`
 3. Vérifier que les fichiers ont été créés
 
 **Résultat attendu :** Tous les fichiers du rôle sont créés avec les bonnes permissions.
@@ -105,10 +105,10 @@ ansible-galaxy init mon-role
 tree roles/serveur-web
 
 # Exécuter le playbook
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml
+ansible-playbook playbooks/site.yml
 
 # Vérifier l'idempotence (2ème exécution = aucun changed)
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml
+ansible-playbook playbooks/site.yml
 ```
 
 ## 🔍 Pour aller plus loin
@@ -166,6 +166,6 @@ Contenu de `roles/serveur-web/tasks/main.yml` :
 ```
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/site.yml
+ansible-playbook playbooks/site.yml
 ```
 </details>

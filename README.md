@@ -110,6 +110,65 @@ Avant de commencer, assurez-vous de disposer des éléments suivants :
 
 ---
 
+## ⚙️ Configuration Ansible (`ansible.cfg`)
+
+Chaque lab contient un fichier `ansible.cfg` à sa racine. Ansible le détecte automatiquement lorsque vous lancez une commande depuis le répertoire du lab — **aucune option `-i` n'est nécessaire**.
+
+```ini
+[defaults]
+inventory = ./inventory/mononode.yml
+stdout_callback = yaml
+host_key_checking = false
+```
+
+### Détail des options
+
+| Option | Valeur | Description |
+|--------|--------|-------------|
+| `inventory` | `./inventory/mononode.yml` | Chemin vers le fichier d'inventaire par défaut. Pointe vers `mononode.yml`, un inventaire YAML mono-noeud qui cible `localhost` en connexion locale. Plus besoin de passer `-i inventory/mononode.yml` à chaque commande. |
+| `stdout_callback` | `yaml` | Change le format de sortie d'Ansible pour afficher les résultats en YAML au lieu du format par défaut (JSON condensé). La sortie est plus lisible, surtout pour les valeurs de retour des modules et le mode `--diff`. |
+| `host_key_checking` | `false` | Désactive la vérification de la clé SSH de l'hôte distant. En environnement de formation sur `localhost`, cela évite les prompts interactifs `Are you sure you want to continue connecting (yes/no)?` qui bloqueraient l'exécution. **En production, cette option doit rester à `true`.** |
+
+### Ordre de priorité d'`ansible.cfg`
+
+Ansible recherche sa configuration dans cet ordre (le premier trouvé gagne) :
+
+1. **`$ANSIBLE_CONFIG`** — variable d'environnement (chemin absolu vers un fichier)
+2. **`./ansible.cfg`** — dans le répertoire courant (c'est celui utilisé par nos labs)
+3. **`~/.ansible.cfg`** — dans le home de l'utilisateur
+4. **`/etc/ansible/ansible.cfg`** — configuration globale du système
+
+> 💡 **En pratique** : placez-vous dans le répertoire du lab (`cd labs/lab-XX-*/`) avant de lancer vos commandes. Ansible détectera automatiquement le `ansible.cfg` local et utilisera l'inventaire `mononode.yml` sans rien préciser :
+>
+> ```bash
+> cd labs/lab-04-premier-playbook/
+> ansible-playbook playbooks/webserver.yml     # -i n'est plus nécessaire
+> ansible all -m ping                          # fonctionne directement
+> ```
+
+### Inventaire `mononode.yml`
+
+Tous les labs utilisent un inventaire unique au format YAML :
+
+```yaml
+---
+all:
+  children:
+    local:
+      hosts:
+        localhost:
+          ansible_connection: local
+```
+
+| Clé | Rôle |
+|-----|------|
+| `all` | Groupe racine implicite contenant tous les hôtes |
+| `children.local` | Groupe `local` utilisé par les playbooks (`hosts: local`) |
+| `localhost` | Hôte unique ciblé par tous les labs |
+| `ansible_connection: local` | Exécution directe sur la machine sans SSH |
+
+---
+
 ## 🤝 Contribution
 
 Les contributions sont les bienvenues ! Pour proposer des améliorations ou corriger une erreur :

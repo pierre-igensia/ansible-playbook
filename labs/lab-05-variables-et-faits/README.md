@@ -27,10 +27,10 @@
 cd labs/lab-05-variables-et-faits
 
 # Vérifier l'inventaire
-cat inventory/hosts.ini
+cat inventory/mononode.yml
 
 # Tester la connectivité
-ansible -i inventory/hosts.ini local -m ping
+ansible local -m ping
 ```
 
 ## 📚 Concepts expliqués
@@ -207,7 +207,7 @@ Si vous n'avez pas besoin des facts (gain de performance) :
 Exécutez le playbook de démonstration :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml
+ansible-playbook playbooks/variables_demo.yml
 ```
 
 Observez comment les différents types de variables sont utilisés et affichés.
@@ -263,7 +263,7 @@ fonctionnalites:
 4. Exécutez-le :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/mon_app.yml
+ansible-playbook playbooks/mon_app.yml
 ```
 
 ---
@@ -275,19 +275,19 @@ ansible-playbook -i inventory/hosts.ini playbooks/mon_app.yml
 1. Affichez tous les facts disponibles :
 
 ```bash
-ansible -i inventory/hosts.ini localhost -m ansible.builtin.setup | head -100
+ansible localhost -m ansible.builtin.setup | head -100
 ```
 
 2. Filtrez les facts de mémoire :
 
 ```bash
-ansible -i inventory/hosts.ini localhost -m ansible.builtin.setup -a "filter=ansible_mem*"
+ansible localhost -m ansible.builtin.setup -a "filter=ansible_mem*"
 ```
 
 3. Exécutez le playbook d'exploration des facts :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/facts_exploration.yml
+ansible-playbook playbooks/facts_exploration.yml
 ```
 
 4. Vérifiez le rapport généré par `variables_demo.yml` :
@@ -307,13 +307,13 @@ cat /tmp/rapport_systeme.txt
 1. Exécutez le playbook avec des valeurs par défaut :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml
+ansible-playbook playbooks/variables_demo.yml
 ```
 
 2. Surchargez l'environnement avec `-e` :
 
 ```bash
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml \
+ansible-playbook playbooks/variables_demo.yml \
   -e "app_environment=production app_port=443"
 ```
 
@@ -327,7 +327,7 @@ app_version: "3.0.0"
 app_environment: "production"
 EOF
 
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml \
+ansible-playbook playbooks/variables_demo.yml \
   -e @/tmp/override.yml
 ```
 
@@ -341,17 +341,17 @@ Pour valider votre compréhension du lab, vérifiez les points suivants :
 
 ```bash
 # 1. Le playbook variables_demo.yml s'exécute sans erreur
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml
+ansible-playbook playbooks/variables_demo.yml
 
 # 2. Le rapport système a bien été créé
 ls -la /tmp/rapport_systeme.txt
 cat /tmp/rapport_systeme.txt
 
 # 3. Le playbook facts_exploration.yml s'exécute sans erreur
-ansible-playbook -i inventory/hosts.ini playbooks/facts_exploration.yml
+ansible-playbook playbooks/facts_exploration.yml
 
 # 4. La surcharge de variables fonctionne
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml \
+ansible-playbook playbooks/variables_demo.yml \
   -e "app_name=test-override"
 ```
 
@@ -449,7 +449,7 @@ fonctionnalites:
 
 ```bash
 # Surcharger plusieurs variables en ligne de commande
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml \
+ansible-playbook playbooks/variables_demo.yml \
   -e "app_name=mon-app-prod app_version=3.0.0 app_environment=production app_port=443"
 
 # Utiliser un fichier YAML de surcharge
@@ -461,7 +461,7 @@ app_environment: "production"
 app_port: 443
 EOF
 
-ansible-playbook -i inventory/hosts.ini playbooks/variables_demo.yml \
+ansible-playbook playbooks/variables_demo.yml \
   -e @/tmp/prod_vars.yml
 ```
 

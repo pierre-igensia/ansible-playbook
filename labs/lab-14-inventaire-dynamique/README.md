@@ -42,7 +42,7 @@ chmod +x inventory/inventaire_dynamique.py
 | Mise à jour | À chaque changement | En temps réel |
 | Recommandé pour | Petites infrastructures | Infrastructures cloud évolutives |
 
-**Inventaire statique** (`hosts.ini`) :
+**Inventaire statique** (`mononode.yml`) :
 
 ```ini
 [serveurs_web]
@@ -108,7 +108,7 @@ Plusieurs sources d'inventaire peuvent être combinées :
 
 ```bash
 # Combiner un inventaire statique et un script dynamique
-ansible-playbook -i inventory/hosts.ini -i inventory/inventaire_dynamique.py site.yml
+ansible-playbook -i inventory/inventaire_dynamique.py site.yml
 
 # Utiliser un répertoire contenant plusieurs fichiers d'inventaire
 ansible-playbook -i inventory/ site.yml
@@ -189,13 +189,13 @@ Combinez l'inventaire statique local et le script dynamique :
 ```bash
 # Utiliser les deux sources d'inventaire simultanément
 ansible-inventory \
-  -i inventory/hosts.ini \
+  \
   -i inventory/inventaire_dynamique.py \
   --graph
 
 # Lancer un playbook sur tous les hôtes de type 'local'
 ansible-playbook \
-  -i inventory/hosts.ini \
+  \
   -i inventory/inventaire_dynamique.py \
   playbooks/tester_inventaire.yml
 ```

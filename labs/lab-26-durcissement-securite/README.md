@@ -113,7 +113,7 @@ cat playbooks/bonnes_pratiques.yml
 
 2. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/bonnes_pratiques.yml
+ansible-playbook playbooks/bonnes_pratiques.yml
 ```
 
 3. Observer que les tâches `no_log` ne montrent pas les valeurs.
@@ -157,7 +157,7 @@ cat playbooks/audit_securite.yml
 
 2. Exécuter l'audit :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/audit_securite.yml
+ansible-playbook playbooks/audit_securite.yml
 ```
 
 3. Consulter le rapport :
@@ -192,10 +192,10 @@ cat playbooks/durcissement_systeme.yml
 
 ```bash
 # Exécuter les bonnes pratiques
-ansible-playbook -i inventory/mononode.yml playbooks/bonnes_pratiques.yml
+ansible-playbook playbooks/bonnes_pratiques.yml
 
 # Exécuter l'audit
-ansible-playbook -i inventory/mononode.yml playbooks/audit_securite.yml
+ansible-playbook playbooks/audit_securite.yml
 cat /tmp/audit_securite/rapport.txt
 ```
 
@@ -240,7 +240,7 @@ cat /tmp/audit_securite/rapport.txt
 <summary>Solution – Exercice 3 : Audit</summary>
 
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/audit_securite.yml
+ansible-playbook playbooks/audit_securite.yml
 cat /tmp/audit_securite/rapport.txt
 # === Rapport d'audit de sécurité ===
 # Date : 2024-01-15T14:30:00

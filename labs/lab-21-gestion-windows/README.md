@@ -108,12 +108,12 @@ cat inventory/mononode.yml
 
 2. Tester la connexion (si machine Windows disponible) :
 ```bash
-ansible windows -i inventory/mononode.yml -m ansible.windows.win_ping
+ansible windows -m ansible.windows.win_ping
 ```
 
 3. Si pas de machine Windows, simuler avec le playbook local :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/windows_simulation.yml
+ansible-playbook playbooks/windows_simulation.yml
 ```
 
 **Résultat attendu :** Le ping Windows répond avec `pong` ou la simulation affiche les concepts clés.
@@ -200,11 +200,11 @@ cat playbooks/registre_config.yml
 
 ```bash
 # Simuler les concepts Windows
-ansible-playbook -i inventory/mononode.yml playbooks/windows_simulation.yml
+ansible-playbook playbooks/windows_simulation.yml
 
 # Avec une vraie machine Windows :
-# ansible windows -i inventory/mononode.yml -m ansible.windows.win_ping
-# ansible-playbook -i inventory/mononode.yml playbooks/gestion_windows.yml
+# ansible windows -m ansible.windows.win_ping
+# ansible-playbook playbooks/gestion_windows.yml
 ```
 
 ## 🔍 Pour aller plus loin
@@ -231,7 +231,7 @@ Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true
 winrm get winrm/config/service
 
 # Depuis Ansible
-ansible windows -i inventory/mononode.yml -m ansible.windows.win_ping
+ansible windows -m ansible.windows.win_ping
 # win-srv01 | SUCCESS => { "changed": false, "ping": "pong" }
 ```
 

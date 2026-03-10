@@ -148,7 +148,7 @@ ansible-galaxy collection install -r requirements.yml
 
 3. Exécuter le playbook :
 ```bash
-ansible-playbook -i inventory/mononode.yml playbooks/collections_demo.yml
+ansible-playbook playbooks/collections_demo.yml
 ```
 
 **Résultat attendu :** Le playbook utilise des modules avec FQCN et s'exécute correctement.
@@ -216,7 +216,7 @@ cat ~/.ansible/collections/ansible_collections/community/general/MANIFEST.json |
 ansible-galaxy collection list
 
 # Exécuter le playbook de démonstration
-ansible-playbook -i inventory/mononode.yml playbooks/collections_demo.yml
+ansible-playbook playbooks/collections_demo.yml
 
 # Vérifier qu'un module de collection est accessible
 ansible-doc community.general.ini_file --short

@@ -17,7 +17,7 @@
 ## 🏗️ Mise en place
 1. Se placer dans le répertoire `labs/lab-03-commandes-adhoc/`
 2. Activer l'environnement virtuel : `source .venv/bin/activate`
-3. Vérifier l'inventaire : `cat inventory/hosts.ini`
+3. Vérifier l'inventaire : `cat inventory/mononode.yml`
 
 ## 📚 Concepts expliqués
 
@@ -72,19 +72,19 @@ ansible localhost -m file -a "path=/tmp/test state=directory" --check
 **Instructions :**
 1. Afficher le temps de fonctionnement (uptime) :
    ```bash
-   ansible localhost -m command -a "uptime" -i inventory/hosts.ini
+   ansible localhost -m command -a "uptime"
    ```
 2. Afficher l'espace disque disponible :
    ```bash
-   ansible localhost -m command -a "df -h" -i inventory/hosts.ini
+   ansible localhost -m command -a "df -h"
    ```
 3. Utiliser le module `setup` pour obtenir la distribution Linux :
    ```bash
-   ansible localhost -m setup -a "filter=ansible_distribution" -i inventory/hosts.ini
+   ansible localhost -m setup -a "filter=ansible_distribution"
    ```
 4. Afficher l'utilisateur courant avec le module `shell` :
    ```bash
-   ansible localhost -m shell -a "whoami && id" -i inventory/hosts.ini
+   ansible localhost -m shell -a "whoami && id"
    ```
 
 **Questions :**
@@ -96,23 +96,23 @@ ansible localhost -m file -a "path=/tmp/test state=directory" --check
 **Instructions :**
 1. Créer un répertoire temporaire :
    ```bash
-   ansible localhost -m file -a "path=/tmp/ansible_lab state=directory mode=0755" -i inventory/hosts.ini
+   ansible localhost -m file -a "path=/tmp/ansible_lab state=directory mode=0755"
    ```
 2. Créer un fichier avec du contenu :
    ```bash
-   ansible localhost -m copy -a "content='Créé par Ansible\n' dest=/tmp/ansible_lab/test.txt mode=0644" -i inventory/hosts.ini
+   ansible localhost -m copy -a "content='Créé par Ansible\n' dest=/tmp/ansible_lab/test.txt mode=0644"
    ```
 3. Vérifier que le fichier existe avec le module `stat` :
    ```bash
-   ansible localhost -m stat -a "path=/tmp/ansible_lab/test.txt" -i inventory/hosts.ini
+   ansible localhost -m stat -a "path=/tmp/ansible_lab/test.txt"
    ```
 4. Récupérer le contenu du fichier :
    ```bash
-   ansible localhost -m command -a "cat /tmp/ansible_lab/test.txt" -i inventory/hosts.ini
+   ansible localhost -m command -a "cat /tmp/ansible_lab/test.txt"
    ```
 5. Supprimer le répertoire :
    ```bash
-   ansible localhost -m file -a "path=/tmp/ansible_lab state=absent" -i inventory/hosts.ini
+   ansible localhost -m file -a "path=/tmp/ansible_lab state=absent"
    ```
 
 **Résultat attendu :** Le répertoire et son contenu sont créés puis supprimés correctement.
@@ -122,19 +122,19 @@ ansible localhost -m file -a "path=/tmp/test state=directory" --check
 **Instructions :**
 1. Exécuter deux fois la même commande de création de répertoire :
    ```bash
-   ansible localhost -m file -a "path=/tmp/idem_test state=directory" -i inventory/hosts.ini
-   ansible localhost -m file -a "path=/tmp/idem_test state=directory" -i inventory/hosts.ini
+   ansible localhost -m file -a "path=/tmp/idem_test state=directory"
+   ansible localhost -m file -a "path=/tmp/idem_test state=directory"
    ```
 2. Observer la couleur et le statut (`changed` vs `ok`) lors des deux exécutions
 3. Comparer avec un module non idempotent :
    ```bash
-   ansible localhost -m shell -a "mkdir -p /tmp/idem_test2" -i inventory/hosts.ini
-   ansible localhost -m shell -a "mkdir -p /tmp/idem_test2" -i inventory/hosts.ini
+   ansible localhost -m shell -a "mkdir -p /tmp/idem_test2"
+   ansible localhost -m shell -a "mkdir -p /tmp/idem_test2"
    ```
 4. Nettoyer :
    ```bash
-   ansible localhost -m file -a "path=/tmp/idem_test state=absent" -i inventory/hosts.ini
-   ansible localhost -m file -a "path=/tmp/idem_test2 state=absent" -i inventory/hosts.ini
+   ansible localhost -m file -a "path=/tmp/idem_test state=absent"
+   ansible localhost -m file -a "path=/tmp/idem_test2 state=absent"
    ```
 
 **Questions :**
@@ -147,27 +147,27 @@ ansible localhost -m file -a "path=/tmp/test state=directory" --check
 1. Examiner le fichier `playbooks/adhoc_examples.yml`
 2. Exécuter le playbook :
    ```bash
-   ansible-playbook playbooks/adhoc_examples.yml -i inventory/hosts.ini
+   ansible-playbook playbooks/adhoc_examples.yml
    ```
 3. Comparer la structure et la lisibilité avec les commandes ad-hoc équivalentes
 
 ## ✅ Validation
 ```bash
 # Tester la connectivité
-ansible localhost -m ping -i inventory/hosts.ini
+ansible localhost -m ping
 
 # Vérifier l'uptime
-ansible localhost -m command -a "uptime" -i inventory/hosts.ini
+ansible localhost -m command -a "uptime"
 
 # Créer et vérifier un fichier
-ansible localhost -m copy -a "content='test\n' dest=/tmp/validation_ansible.txt" -i inventory/hosts.ini
-ansible localhost -m stat -a "path=/tmp/validation_ansible.txt" -i inventory/hosts.ini
+ansible localhost -m copy -a "content='test\n' dest=/tmp/validation_ansible.txt"
+ansible localhost -m stat -a "path=/tmp/validation_ansible.txt"
 
 # Nettoyer
-ansible localhost -m file -a "path=/tmp/validation_ansible.txt state=absent" -i inventory/hosts.ini
+ansible localhost -m file -a "path=/tmp/validation_ansible.txt state=absent"
 
 # Exécuter le playbook de démonstration
-ansible-playbook playbooks/adhoc_examples.yml -i inventory/hosts.ini
+ansible-playbook playbooks/adhoc_examples.yml
 ```
 
 ## 🔍 Pour aller plus loin
@@ -186,16 +186,16 @@ ansible-playbook playbooks/adhoc_examples.yml -i inventory/hosts.ini
 ### Solution Exercice 1
 ```bash
 # Uptime
-ansible localhost -m command -a "uptime" -i inventory/hosts.ini
+ansible localhost -m command -a "uptime"
 
 # Espace disque
-ansible localhost -m command -a "df -h" -i inventory/hosts.ini
+ansible localhost -m command -a "df -h"
 
 # Distribution via setup (retourne des facts structurés, plus fiables)
-ansible localhost -m setup -a "filter=ansible_distribution" -i inventory/hosts.ini
+ansible localhost -m setup -a "filter=ansible_distribution"
 
 # Utilisateur courant (nécessite le shell pour les pipes)
-ansible localhost -m shell -a "whoami && id" -i inventory/hosts.ini
+ansible localhost -m shell -a "whoami && id"
 
 # La différence : setup retourne des données JSON structurées et fiables,
 # tandis que command retourne du texte brut.
@@ -204,28 +204,28 @@ ansible localhost -m shell -a "whoami && id" -i inventory/hosts.ini
 ### Solution Exercice 2
 ```bash
 # Créer le répertoire
-ansible localhost -m file -a "path=/tmp/ansible_lab state=directory mode=0755" -i inventory/hosts.ini
+ansible localhost -m file -a "path=/tmp/ansible_lab state=directory mode=0755"
 
 # Créer un fichier
-ansible localhost -m copy -a "content='Créé par Ansible\n' dest=/tmp/ansible_lab/test.txt mode=0644" -i inventory/hosts.ini
+ansible localhost -m copy -a "content='Créé par Ansible\n' dest=/tmp/ansible_lab/test.txt mode=0644"
 
 # Vérifier
-ansible localhost -m stat -a "path=/tmp/ansible_lab/test.txt" -i inventory/hosts.ini
+ansible localhost -m stat -a "path=/tmp/ansible_lab/test.txt"
 
 # Lire le contenu
-ansible localhost -m command -a "cat /tmp/ansible_lab/test.txt" -i inventory/hosts.ini
+ansible localhost -m command -a "cat /tmp/ansible_lab/test.txt"
 
 # Supprimer
-ansible localhost -m file -a "path=/tmp/ansible_lab state=absent" -i inventory/hosts.ini
+ansible localhost -m file -a "path=/tmp/ansible_lab state=absent"
 ```
 
 ### Solution Exercice 3
 ```bash
 # Première exécution -> "changed" (jaune) : le répertoire est créé
-ansible localhost -m file -a "path=/tmp/idem_test state=directory" -i inventory/hosts.ini
+ansible localhost -m file -a "path=/tmp/idem_test state=directory"
 
 # Deuxième exécution -> "ok" (vert) : rien à faire, déjà idempotent
-ansible localhost -m file -a "path=/tmp/idem_test state=directory" -i inventory/hosts.ini
+ansible localhost -m file -a "path=/tmp/idem_test state=directory"
 
 # Le module shell est TOUJOURS "changed" car Ansible ne peut pas savoir
 # si mkdir a réellement modifié quelque chose.

@@ -19,7 +19,7 @@
 ## 🏗️ Mise en place
 1. Se placer dans le répertoire `labs/lab-04-premier-playbook/`
 2. Activer l'environnement virtuel : `source .venv/bin/activate`
-3. Vérifier l'inventaire : `cat inventory/hosts.ini`
+3. Vérifier l'inventaire : `cat inventory/mononode.yml`
 
 ## 📚 Concepts expliqués
 
@@ -115,7 +115,7 @@ Un playbook bien écrit doit être **idempotent** : l'exécuter plusieurs fois p
 1. Examiner le fichier `playbooks/webserver.yml`
 2. Exécuter le playbook :
    ```bash
-   ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+   ansible-playbook playbooks/webserver.yml
    ```
 3. Observer la sortie : couleur verte (ok), jaune (changed), rouge (failed)
 4. Exécuter le playbook une **deuxième fois** et comparer la sortie
@@ -139,12 +139,12 @@ localhost : ok=7  changed=3  unreachable=0  failed=0
 3. Changer `app_version` en `"2.0.0"`
 4. Exécuter le playbook et vérifier que les nouveaux chemins sont créés :
    ```bash
-   ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+   ansible-playbook playbooks/webserver.yml
    ls /tmp/mon-super-projet/
    ```
 5. Passer une variable en ligne de commande avec `--extra-vars` :
    ```bash
-   ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini \
+   ansible-playbook playbooks/webserver.yml \
      --extra-vars "app_name=test-cli app_version=3.0.0"
    ```
 
@@ -156,7 +156,7 @@ localhost : ok=7  changed=3  unreachable=0  failed=0
 1. Examiner le fichier `playbooks/gather_facts.yml`
 2. Exécuter le playbook :
    ```bash
-   ansible-playbook playbooks/gather_facts.yml -i inventory/hosts.ini
+   ansible-playbook playbooks/gather_facts.yml
    ```
 3. Observer les informations système affichées
 4. Ajouter une nouvelle tâche qui affiche le nom d'hôte (`ansible_hostname`) et la version du noyau (`ansible_kernel`)
@@ -203,16 +203,16 @@ ok: [localhost] => {
 ## ✅ Validation
 ```bash
 # Exécuter le playbook principal
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+ansible-playbook playbooks/webserver.yml
 
 # Vérifier les fichiers créés
 ls -la /tmp/mon-application/
 
 # Exécuter le playbook gather_facts
-ansible-playbook playbooks/gather_facts.yml -i inventory/hosts.ini
+ansible-playbook playbooks/gather_facts.yml
 
 # Tester avec extra-vars
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini \
+ansible-playbook playbooks/webserver.yml \
   --extra-vars "app_name=validation app_version=1.0.0"
 
 # Vérifier le résultat
@@ -239,10 +239,10 @@ rm -rf /tmp/mon-application/ /tmp/mon-super-projet/ /tmp/validation/ /tmp/ansibl
 ### Solution Exercice 1
 ```bash
 # Première exécution : changed=3 (répertoire + config.ini + index.html créés)
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+ansible-playbook playbooks/webserver.yml
 
 # Deuxième exécution : changed=0 (tout existe déjà -> idempotent)
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+ansible-playbook playbooks/webserver.yml
 
 # Les fichiers sont créés dans /tmp/mon-application/
 ls /tmp/mon-application/
@@ -254,10 +254,10 @@ ls /tmp/mon-application/
 # app_name: "mon-super-projet"
 # app_version: "2.0.0"
 
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini
+ansible-playbook playbooks/webserver.yml
 
 # Passer les variables en ligne de commande (priorité maximale)
-ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini \
+ansible-playbook playbooks/webserver.yml \
   --extra-vars "app_name=test-cli app_version=3.0.0"
 
 # Les --extra-vars ont la PRIORITÉ la plus haute sur toutes les autres variables.
@@ -266,7 +266,7 @@ ansible-playbook playbooks/webserver.yml -i inventory/hosts.ini \
 ### Solution Exercice 3
 ```bash
 # Exécuter le playbook
-ansible-playbook playbooks/gather_facts.yml -i inventory/hosts.ini
+ansible-playbook playbooks/gather_facts.yml
 
 # Tâche supplémentaire à ajouter dans gather_facts.yml :
 #   - name: Afficher le nom d'hôte et le noyau
