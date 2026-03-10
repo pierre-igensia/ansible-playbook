@@ -141,16 +141,6 @@ ansible localhost -m file -a "path=/tmp/test state=directory" --check
 - Quelle est la couleur de sortie lors de la première exécution ? Et la seconde ?
 - Pourquoi le module `shell` est-il toujours marqué `changed` ?
 
-### Exercice 4 – Exécuter le playbook équivalent
-**But :** Comparer les commandes ad-hoc avec leur équivalent en playbook.
-**Instructions :**
-1. Examiner le fichier `playbooks/adhoc_examples.yml`
-2. Exécuter le playbook :
-   ```bash
-   ansible-playbook playbooks/adhoc_examples.yml
-   ```
-3. Comparer la structure et la lisibilité avec les commandes ad-hoc équivalentes
-
 ## ✅ Validation
 ```bash
 # Tester la connectivité
@@ -166,8 +156,6 @@ ansible localhost -m stat -a "path=/tmp/validation_ansible.txt"
 # Nettoyer
 ansible localhost -m file -a "path=/tmp/validation_ansible.txt state=absent"
 
-# Exécuter le playbook de démonstration
-ansible-playbook playbooks/adhoc_examples.yml
 ```
 
 ## 🔍 Pour aller plus loin

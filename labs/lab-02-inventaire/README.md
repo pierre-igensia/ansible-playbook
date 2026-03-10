@@ -119,9 +119,9 @@ inventory/
 **But :** Utiliser `host_vars` et `group_vars` pour organiser les variables.
 **Instructions :**
 1. Ouvrir `inventory/host_vars/web01.yml` et `inventory/group_vars/webservers.yml`
-2. Lancer le playbook de démonstration :
+2. Inspecter les variables effectives d'un hôte :
    ```bash
-   ansible-playbook playbooks/list_hosts.yml -i inventory/hosts.yml
+   ansible-inventory -i inventory/hosts.yml --host web01
    ```
 3. Observer quelle valeur de `http_port` est utilisée pour `web01` (host_vars ou group_vars ?)
 
@@ -150,9 +150,6 @@ ansible webservers --list-hosts
 
 # Lister les hôtes depuis l'inventaire YAML
 ansible all --list-hosts -i inventory/hosts.yml
-
-# Exécuter le playbook de démonstration
-ansible-playbook playbooks/list_hosts.yml -i inventory/hosts.yml
 
 # Vérifier les variables d'un hôte spécifique
 ansible-inventory -i inventory/hosts.yml --host web01
@@ -195,8 +192,8 @@ ansible all --list-hosts -i inventory/hosts.yml
 
 ### Solution Exercice 3
 ```bash
-# Lancer le playbook
-ansible-playbook playbooks/list_hosts.yml -i inventory/hosts.yml
+# Inspecter les variables effectives de web01
+ansible-inventory -i inventory/hosts.yml --host web01
 
 # Les host_vars ont PRIORITÉ sur les group_vars.
 # web01 utilise http_port=80 défini dans host_vars/web01.yml.
