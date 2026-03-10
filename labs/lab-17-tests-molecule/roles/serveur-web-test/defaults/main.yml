@@ -1,0 +1,5 @@
+---
+serveur_web_port: 8080
+serveur_web_racine: /var/www/html
+serveur_web_nom: "mon-serveur-test"
+serveur_web_message: "Bienvenue sur le serveur de test"

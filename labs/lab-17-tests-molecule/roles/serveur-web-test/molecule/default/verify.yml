@@ -1,0 +1,38 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Vérifier que le répertoire web existe
+      ansible.builtin.stat:
+        path: /var/www/html
+      register: repertoire_web
+
+    - name: Confirmer l'existence du répertoire
+      ansible.builtin.assert:
+        that:
+          - repertoire_web.stat.exists
+          - repertoire_web.stat.isdir
+        fail_msg: "Le répertoire /var/www/html n'existe pas"
+
+    - name: Vérifier la page d'accueil
+      ansible.builtin.command: cat /var/www/html/index.html
+      register: contenu_page
+      changed_when: false
+
+    - name: Confirmer le contenu de la page
+      ansible.builtin.assert:
+        that:
+          - "'Bienvenue' in contenu_page.stdout"
+        fail_msg: "La page d'accueil ne contient pas 'Bienvenue'"
+
+    - name: Vérifier le fichier de configuration
+      ansible.builtin.command: cat /etc/serveur-web/config.conf
+      register: contenu_config
+      changed_when: false
+
+    - name: Confirmer la configuration
+      ansible.builtin.assert:
+        that:
+          - "'port=8080' in contenu_config.stdout"
+        fail_msg: "La configuration ne contient pas le bon port"

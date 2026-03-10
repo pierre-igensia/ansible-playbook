@@ -1,0 +1,22 @@
+---
+- name: Benchmark des forks
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "Tâche 1 – Simuler un traitement"
+      ansible.builtin.command: sleep 1
+      changed_when: false
+
+    - name: "Tâche 2 – Écriture fichier"
+      ansible.builtin.copy:
+        content: "benchmark {{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }}"
+        dest: /tmp/benchmark_forks.txt
+        mode: '0644'
+
+    - name: "Tâche 3 – Lecture système"
+      ansible.builtin.command: uname -a
+      changed_when: false
+
+    - name: "Tâche 4 – Simuler un autre traitement"
+      ansible.builtin.command: sleep 1
+      changed_when: false

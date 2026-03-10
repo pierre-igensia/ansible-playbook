@@ -1,0 +1,4 @@
+---
+- name: Recharger la base de données
+  ansible.builtin.debug:
+    msg: "Base de données rechargée avec la nouvelle configuration"

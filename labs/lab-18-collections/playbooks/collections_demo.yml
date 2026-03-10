@@ -1,0 +1,37 @@
+---
+- name: Démonstration des collections Ansible
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Créer le répertoire de démonstration
+      ansible.builtin.file:
+        path: /tmp/collections_demo
+        state: directory
+        mode: '0755'
+
+    - name: Utiliser community.general.ini_file
+      community.general.ini_file:
+        path: /tmp/collections_demo/app.ini
+        section: application
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+        mode: '0644'
+      loop:
+        - { option: "nom", value: "demo-collections" }
+        - { option: "version", value: "1.0.0" }
+        - { option: "environnement", value: "development" }
+
+    - name: Afficher les informations système avec ansible.builtin
+      ansible.builtin.debug:
+        msg: >
+          Système : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          | Architecture : {{ ansible_architecture }}
+
+    - name: Lire le fichier INI créé
+      ansible.builtin.command: cat /tmp/collections_demo/app.ini
+      register: contenu_ini
+      changed_when: false
+
+    - name: Afficher le contenu du fichier INI
+      ansible.builtin.debug:
+        var: contenu_ini.stdout_lines

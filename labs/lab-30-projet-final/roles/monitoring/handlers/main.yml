@@ -1,0 +1,4 @@
+---
+- name: Redémarrer le monitoring
+  ansible.builtin.debug:
+    msg: "Service de monitoring redémarré"

@@ -1,0 +1,33 @@
+---
+- name: Démonstration de la délégation
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Créer le répertoire de rapport
+      ansible.builtin.file:
+        path: /tmp/delegation_demo
+        state: directory
+        mode: '0755'
+
+    - name: Générer un rapport localement
+      ansible.builtin.copy:
+        content: |
+          === Rapport de déploiement ===
+          Hôte cible : {{ inventory_hostname }}
+          Date : {{ ansible_date_time.iso8601 }}
+          OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Kernel : {{ ansible_kernel }}
+          Architecture : {{ ansible_architecture }}
+        dest: /tmp/delegation_demo/rapport.txt
+        mode: '0644'
+      delegate_to: localhost
+
+    - name: Afficher le rapport
+      ansible.builtin.command: cat /tmp/delegation_demo/rapport.txt
+      register: rapport
+      changed_when: false
+      delegate_to: localhost
+
+    - name: Contenu du rapport
+      ansible.builtin.debug:
+        var: rapport.stdout_lines

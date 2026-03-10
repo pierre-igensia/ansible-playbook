@@ -1,0 +1,52 @@
+---
+- name: Simulation des concepts Windows Ansible
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "📋 Présentation des modules Windows"
+      ansible.builtin.debug:
+        msg: |
+          === Modules Windows principaux ===
+          - ansible.windows.win_ping       → Tester la connexion
+          - ansible.windows.win_copy       → Copier des fichiers
+          - ansible.windows.win_file       → Gérer fichiers/répertoires
+          - ansible.windows.win_package    → Installer MSI/EXE
+          - ansible.windows.win_feature    → Fonctionnalités Windows
+          - ansible.windows.win_service    → Gérer les services
+          - ansible.windows.win_user       → Utilisateurs locaux
+          - ansible.windows.win_regedit    → Registre Windows
+          - ansible.windows.win_shell      → Commandes PowerShell
+
+    - name: "🔧 Configuration WinRM requise"
+      ansible.builtin.debug:
+        msg: |
+          === Configuration Windows (PowerShell admin) ===
+          winrm quickconfig -force
+          Enable-PSRemoting -Force
+          Set-Item WSMan:\localhost\Service\AllowUnencrypted -Value $true
+          Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true
+
+    - name: "📁 Simuler la création de structure"
+      ansible.builtin.file:
+        path: "/tmp/windows_simulation/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "C_Users"
+        - "C_Program_Files"
+        - "C_Windows_Temp"
+
+    - name: "📝 Simuler un fichier de configuration Windows"
+      ansible.builtin.copy:
+        content: |
+          [connexion]
+          type=winrm
+          transport=ntlm
+          port=5985
+          scheme=http
+        dest: /tmp/windows_simulation/winrm_config.ini
+        mode: '0644'
+
+    - name: "✅ Simulation terminée"
+      ansible.builtin.debug:
+        msg: "Les concepts Windows ont été simulés dans /tmp/windows_simulation/"

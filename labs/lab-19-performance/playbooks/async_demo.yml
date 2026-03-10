@@ -1,0 +1,46 @@
+---
+- name: Démonstration async/poll
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Lancer une tâche longue en arrière-plan
+      ansible.builtin.command: sleep 5
+      async: 30
+      poll: 0
+      register: tache_longue_1
+
+    - name: Lancer une deuxième tâche longue
+      ansible.builtin.command: sleep 3
+      async: 30
+      poll: 0
+      register: tache_longue_2
+
+    - name: Faire autre chose pendant ce temps
+      ansible.builtin.debug:
+        msg: "Les tâches longues s'exécutent en arrière-plan..."
+
+    - name: Créer un fichier pendant l'attente
+      ansible.builtin.copy:
+        content: "Travail effectué pendant l'exécution async"
+        dest: /tmp/async_demo_travail.txt
+        mode: '0644'
+
+    - name: Vérifier la tâche longue 1
+      ansible.builtin.async_status:
+        jid: "{{ tache_longue_1.ansible_job_id }}"
+      register: resultat_1
+      until: resultat_1.finished
+      retries: 15
+      delay: 2
+
+    - name: Vérifier la tâche longue 2
+      ansible.builtin.async_status:
+        jid: "{{ tache_longue_2.ansible_job_id }}"
+      register: resultat_2
+      until: resultat_2.finished
+      retries: 15
+      delay: 2
+
+    - name: Résumé
+      ansible.builtin.debug:
+        msg: "Toutes les tâches asynchrones sont terminées avec succès"

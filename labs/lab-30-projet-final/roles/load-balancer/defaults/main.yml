@@ -1,0 +1,6 @@
+---
+lb_port: 80
+lb_serveur_nom: "app.formation.local"
+lb_racine: "{{ projet_racine }}/nginx"
+lb_backends:
+  - { host: "127.0.0.1", port: 8080 }

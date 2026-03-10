@@ -1,0 +1,24 @@
+#!/bin/bash
+# Script de collecte de métriques
+# Généré par Ansible - Projet Final
+
+LOG_DIR="{{ monitoring_racine }}/logs"
+mkdir -p "$LOG_DIR"
+
+echo "=== Collecte de métriques $(date -Iseconds) ===" >> "$LOG_DIR/metriques.log"
+
+# Vérifier les services
+{% for service in monitoring_services %}
+echo -n "{{ service.nom }} (port {{ service.port }}): " >> "$LOG_DIR/metriques.log"
+if lsof -i :{{ service.port }} > /dev/null 2>&1; then
+    echo "UP" >> "$LOG_DIR/metriques.log"
+else
+    echo "DOWN" >> "$LOG_DIR/metriques.log"
+fi
+{% endfor %}
+
+# Métriques système
+echo "CPU: $(top -l 1 | grep "CPU usage" 2>/dev/null || echo 'N/A')" >> "$LOG_DIR/metriques.log"
+echo "RAM: $(vm_stat 2>/dev/null | head -5 || free -h 2>/dev/null | head -2 || echo 'N/A')" >> "$LOG_DIR/metriques.log"
+echo "Disque: $(df -h / | tail -1)" >> "$LOG_DIR/metriques.log"
+echo "" >> "$LOG_DIR/metriques.log"

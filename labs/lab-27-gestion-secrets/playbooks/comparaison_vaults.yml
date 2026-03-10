@@ -1,0 +1,63 @@
+---
+- name: Comparaison des approches de gestion de secrets
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "📋 Comparaison des gestionnaires de secrets"
+      ansible.builtin.debug:
+        msg: |
+          === Ansible Vault ===
+          ✅ Simple, intégré, pas de dépendance externe
+          ❌ Pas de rotation automatique
+          ❌ Pas d'audit granulaire
+          ❌ Partage de mot de passe Vault complexe en équipe
+          → Idéal pour : petits projets, secrets peu nombreux
+
+          === HashiCorp Vault ===
+          ✅ Centralisé, audit complet, rotation automatique
+          ✅ Policies granulaires, multi-méthodes d'auth
+          ❌ Infrastructure supplémentaire à gérer
+          ❌ Complexité opérationnelle
+          → Idéal pour : entreprises, multi-équipes, conformité
+
+          === AWS Secrets Manager ===
+          ✅ Natif AWS, rotation automatique, IAM
+          ✅ Pas d'infra à gérer
+          ❌ Vendor lock-in
+          ❌ Coût par secret
+          → Idéal pour : infrastructures 100% AWS
+
+          === Azure Key Vault ===
+          ✅ Natif Azure, HSM, certificats
+          ❌ Vendor lock-in
+          → Idéal pour : infrastructures Azure
+
+    - name: "🔑 Exemple : Ansible Vault (intégré)"
+      ansible.builtin.debug:
+        msg: |
+          # Chiffrer un fichier
+          ansible-vault encrypt secrets.yml
+
+          # Utiliser dans un playbook
+          ansible-playbook site.yml --ask-vault-pass
+
+    - name: "🔐 Exemple : HashiCorp Vault (lookup)"
+      ansible.builtin.debug:
+        msg: |
+          # Dans un playbook
+          vars:
+            db_password: >-
+              {{ lookup('community.hashi_vault.hashi_vault',
+                 'secret/data/database password',
+                 url='http://vault:8200',
+                 token='mon-token') }}
+
+    - name: "☁️ Exemple : AWS Secrets Manager (lookup)"
+      ansible.builtin.debug:
+        msg: |
+          # Dans un playbook
+          vars:
+            api_key: >-
+              {{ lookup('amazon.aws.aws_secret',
+                 'production/api-key',
+                 region='eu-west-1') }}

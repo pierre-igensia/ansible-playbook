@@ -1,0 +1,4 @@
+---
+- name: Redémarrer l'application
+  ansible.builtin.debug:
+    msg: "Application {{ app_nom }} redémarrée sur le port {{ app_port }}"

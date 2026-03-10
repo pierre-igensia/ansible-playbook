@@ -1,0 +1,37 @@
+# Configuration NGINX - Load Balancer
+# Généré par Ansible - Projet Final
+
+upstream backend {
+{% for backend in lb_backends %}
+    server {{ backend.host }}:{{ backend.port }};
+{% endfor %}
+}
+
+server {
+    listen {{ lb_port }};
+    server_name {{ lb_serveur_nom }};
+
+    access_log {{ lb_racine }}/access.log;
+    error_log {{ lb_racine }}/error.log;
+
+    location / {
+        proxy_pass http://backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 30s;
+    }
+
+    location /health {
+        proxy_pass http://backend/health;
+        access_log off;
+    }
+
+    location /status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+}

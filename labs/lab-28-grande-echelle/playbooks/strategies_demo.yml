@@ -1,0 +1,37 @@
+---
+- name: Démonstration des stratégies d'exécution
+  hosts: local
+  gather_facts: false
+  # strategy: free  # Décommenter pour tester la stratégie free
+  tasks:
+    - name: "📋 Stratégies disponibles"
+      ansible.builtin.debug:
+        msg: |
+          === Stratégies d'exécution ===
+
+          1. linear (défaut) :
+             Tâche 1 → tous les hôtes → Tâche 2 → tous les hôtes → ...
+             + Prévisible, facile à debugger
+             - Les hôtes rapides attendent les lents
+
+          2. free :
+             Chaque hôte avance indépendamment
+             + Plus rapide quand les hôtes ont des vitesses différentes
+             - Sortie moins lisible, ordre imprévisible
+
+          3. debug :
+             Pause interactive à chaque tâche
+             + Parfait pour le débogage
+             - Uniquement pour le développement
+
+    - name: "Tâche rapide"
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} - tâche rapide terminée"
+
+    - name: "Tâche avec traitement"
+      ansible.builtin.command: sleep 1
+      changed_when: false
+
+    - name: "Tâche finale"
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} - toutes les tâches terminées"

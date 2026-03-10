@@ -1,0 +1,26 @@
+---
+- name: Démonstration de run_once
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Créer le répertoire
+      ansible.builtin.file:
+        path: /tmp/delegation_demo
+        state: directory
+        mode: '0755'
+
+    - name: "[UNIQUE] Initialiser la base de données"
+      ansible.builtin.copy:
+        content: "Migration de base de données exécutée une seule fois\n"
+        dest: /tmp/delegation_demo/migration.log
+        mode: '0644'
+      run_once: true
+
+    - name: "[TOUS] Déployer l'application sur chaque hôte"
+      ansible.builtin.debug:
+        msg: "Déploiement sur {{ inventory_hostname }}"
+
+    - name: "[UNIQUE] Envoyer la notification de fin"
+      ansible.builtin.debug:
+        msg: "Notification : déploiement terminé sur tous les hôtes"
+      run_once: true

@@ -1,0 +1,22 @@
+-- Script d'initialisation de la base de données
+-- Généré par Ansible
+
+CREATE DATABASE "{{ db_nom }}";
+CREATE USER "{{ db_utilisateur }}" WITH ENCRYPTED PASSWORD '{{ db_mot_de_passe }}';
+GRANT ALL PRIVILEGES ON DATABASE "{{ db_nom }}" TO "{{ db_utilisateur }}";
+
+\c "{{ db_nom }}";
+
+CREATE TABLE IF NOT EXISTS utilisateurs (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES utilisateurs(id),
+    token VARCHAR(255) NOT NULL,
+    date_expiration TIMESTAMP NOT NULL
+);

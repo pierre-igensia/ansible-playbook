@@ -1,0 +1,47 @@
+---
+- name: Playbook de diagnostic
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Afficher les informations système
+      ansible.builtin.debug:
+        msg: >
+          OS={{ ansible_distribution }}
+          Version={{ ansible_distribution_version }}
+          Kernel={{ ansible_kernel }}
+
+    - name: Afficher les variables de connexion
+      ansible.builtin.debug:
+        msg: >
+          Connection={{ ansible_connection }}
+          Python={{ ansible_python.version.major }}.{{ ansible_python.version.minor }}
+
+    - name: Vérifier la connectivité réseau
+      ansible.builtin.command: ping -c 1 127.0.0.1
+      register: ping_result
+      changed_when: false
+
+    - name: Résultat du ping
+      ansible.builtin.debug:
+        var: ping_result.stdout_lines
+
+    - name: Vérifier l'espace disque
+      ansible.builtin.command: df -h /tmp
+      register: disk_space
+      changed_when: false
+
+    - name: Espace disque
+      ansible.builtin.debug:
+        var: disk_space.stdout_lines
+
+    - name: Créer un fichier de diagnostic
+      ansible.builtin.copy:
+        content: |
+          === Diagnostic Ansible ===
+          Date : {{ ansible_date_time.iso8601 }}
+          Hôte : {{ inventory_hostname }}
+          OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Python : {{ ansible_python.executable }}
+          Ansible connection : {{ ansible_connection }}
+        dest: /tmp/ansible_diagnostic.txt
+        mode: '0644'

@@ -1,0 +1,7 @@
+---
+# Variables globales pour tous les hôtes
+projet_nom: "formation-ansible"
+environnement: "lab"
+ntp_serveurs:
+  - 0.fr.pool.ntp.org
+  - 1.fr.pool.ntp.org

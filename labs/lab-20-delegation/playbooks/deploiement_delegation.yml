@@ -1,0 +1,42 @@
+---
+- name: Scénario de déploiement avec délégation
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Créer le répertoire de logs
+      ansible.builtin.file:
+        path: /tmp/delegation_demo
+        state: directory
+        mode: '0755'
+
+    - name: "[PRÉ-DÉPLOIEMENT] Journaliser le début"
+      ansible.builtin.copy:
+        content: "Début du déploiement - {{ ansible_date_time.iso8601 }}\n"
+        dest: /tmp/delegation_demo/pre_deploy.log
+        mode: '0644'
+      delegate_to: localhost
+      run_once: true
+
+    - name: "[DÉPLOIEMENT] Exécuter la mise à jour"
+      ansible.builtin.copy:
+        content: |
+          Déploiement sur {{ inventory_hostname }}
+          Date : {{ ansible_date_time.iso8601 }}
+          Status : OK
+        dest: /tmp/delegation_demo/deploy.log
+        mode: '0644'
+
+    - name: "[POST-DÉPLOIEMENT] Confirmer le succès"
+      ansible.builtin.copy:
+        content: |
+          Déploiement terminé avec succès
+          Hôte : {{ inventory_hostname }}
+          Date : {{ ansible_date_time.iso8601 }}
+        dest: /tmp/delegation_demo/post_deploy.log
+        mode: '0644'
+      delegate_to: localhost
+      run_once: true
+
+    - name: Afficher le résumé
+      ansible.builtin.debug:
+        msg: "Déploiement complet sur {{ inventory_hostname }}"

@@ -1,0 +1,42 @@
+---
+# Ce playbook contient des erreurs intentionnelles à identifier
+# Exécutez-le et essayez de comprendre chaque erreur
+- name: Playbook avec des erreurs
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: "Erreur 1 – Variable non définie"
+      ansible.builtin.debug:
+        msg: "La valeur est : {{ variable_qui_nexiste_pas | default('VALEUR PAR DÉFAUT') }}"
+
+    - name: "Erreur 2 – Mauvaises permissions (mode en entier)"
+      ansible.builtin.file:
+        path: /tmp/test_erreur
+        state: directory
+        mode: '0755'
+        # Note : mode: 755 (sans quotes) est une erreur courante
+        # 755 en décimal = 01363 en octal, ce n'est PAS ce qu'on veut
+        # Toujours utiliser une chaîne : mode: '0755'
+
+    - name: "Erreur 3 – Command avec changed_when manquant"
+      ansible.builtin.command: echo "test"
+      # Sans changed_when, cette tâche sera toujours "changed"
+      # Bonne pratique : ajouter changed_when: false si la commande
+      # ne modifie pas l'état du système
+      changed_when: false
+
+    - name: "Erreur 4 – Register mal utilisé"
+      ansible.builtin.command: whoami
+      register: utilisateur
+      changed_when: false
+
+    - name: Afficher le résultat du register
+      ansible.builtin.debug:
+        # Erreur courante : utiliser .stdout au lieu de .stdout_lines
+        # ou oublier que register est un objet avec .rc, .stdout, .stderr
+        msg: "Utilisateur : {{ utilisateur.stdout }}"
+
+    - name: Nettoyer
+      ansible.builtin.file:
+        path: /tmp/test_erreur
+        state: absent

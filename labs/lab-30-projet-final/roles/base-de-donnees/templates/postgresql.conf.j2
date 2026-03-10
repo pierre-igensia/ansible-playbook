@@ -1,0 +1,22 @@
+# Configuration PostgreSQL
+# Généré par Ansible - Projet Final
+
+# Connexion
+listen_addresses = 'localhost'
+port = {{ db_port }}
+
+# Performance
+shared_buffers = 256MB
+work_mem = 4MB
+max_connections = 100
+
+# Journalisation
+log_destination = 'stderr'
+logging_collector = on
+log_directory = '{{ db_racine }}/logs'
+log_filename = 'postgresql-%Y-%m-%d.log'
+log_min_duration_statement = 500
+
+# Sécurité
+ssl = off
+password_encryption = scram-sha-256

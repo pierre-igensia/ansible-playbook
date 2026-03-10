@@ -1,0 +1,60 @@
+---
+- name: Audit de sécurité automatisé
+  hosts: local
+  gather_facts: true
+  vars:
+    rapport_dir: /tmp/audit_securite
+  tasks:
+    - name: Créer le répertoire de rapport
+      ansible.builtin.file:
+        path: "{{ rapport_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Vérifier les permissions de /etc/passwd
+      ansible.builtin.stat:
+        path: /etc/passwd
+      register: etc_passwd
+
+    - name: Vérifier les permissions de /etc/hosts
+      ansible.builtin.stat:
+        path: /etc/hosts
+      register: etc_hosts
+
+    - name: Vérifier les utilisateurs sans mot de passe
+      ansible.builtin.command: awk -F':' '($2 == "" || $2 == "!" || $2 == "*") {print $1}' /etc/shadow
+      register: users_sans_mdp
+      changed_when: false
+      failed_when: false
+
+    - name: Vérifier les ports en écoute
+      ansible.builtin.command: lsof -i -P -n
+      register: ports_ecoute
+      changed_when: false
+      failed_when: false
+
+    - name: Générer le rapport d'audit
+      ansible.builtin.copy:
+        content: |
+          === Rapport d'audit de sécurité ===
+          Date : {{ ansible_date_time.iso8601 }}
+          Hôte : {{ inventory_hostname }}
+          OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+
+          --- Permissions des fichiers critiques ---
+          /etc/passwd : {{ etc_passwd.stat.mode | default('N/A') }}
+          /etc/hosts  : {{ etc_hosts.stat.mode | default('N/A') }}
+
+          --- Utilisateurs sans mot de passe ---
+          {{ users_sans_mdp.stdout | default('Aucun') }}
+
+          --- Ports en écoute ---
+          {{ ports_ecoute.stdout | default('Impossible de vérifier') }}
+
+          === Fin du rapport ===
+        dest: "{{ rapport_dir }}/rapport.txt"
+        mode: '0644'
+
+    - name: Afficher le résumé
+      ansible.builtin.debug:
+        msg: "Rapport d'audit généré dans {{ rapport_dir }}/rapport.txt"

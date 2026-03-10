@@ -1,0 +1,49 @@
+---
+# Ce playbook illustre le durcissement système
+# Certaines tâches nécessitent become: true sur un vrai serveur
+- name: Durcissement système
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: "📋 Points de durcissement système"
+      ansible.builtin.debug:
+        msg: |
+          === Checklist de durcissement ===
+          1. Désactiver les services inutiles
+          2. Configurer le pare-feu (iptables/nftables)
+          3. Paramètres sysctl de sécurité
+          4. Politique de mots de passe
+          5. Permissions des fichiers sensibles
+          6. Journalisation et audit (auditd)
+          7. Mises à jour automatiques de sécurité
+
+    - name: "🔧 Paramètres sysctl recommandés"
+      ansible.builtin.debug:
+        msg: |
+          # Désactiver le routage IP
+          net.ipv4.ip_forward = 0
+          # Protection contre le spoofing
+          net.ipv4.conf.all.rp_filter = 1
+          # Ignorer les redirections ICMP
+          net.ipv4.conf.all.accept_redirects = 0
+          # Activer les SYN cookies
+          net.ipv4.tcp_syncookies = 1
+          # Désactiver le source routing
+          net.ipv4.conf.all.accept_source_route = 0
+
+    - name: Créer un rapport de conformité
+      ansible.builtin.copy:
+        content: |
+          === Rapport de conformité système ===
+          Date : {{ ansible_date_time.iso8601 }}
+          Hôte : {{ inventory_hostname }}
+
+          [Vérifications]
+          - OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          - Kernel : {{ ansible_kernel }}
+          - Architecture : {{ ansible_architecture }}
+          - SELinux/AppArmor : à vérifier
+          - Pare-feu : à configurer
+          - Mises à jour : à planifier
+        dest: /tmp/securite_demo/conformite.txt
+        mode: '0644'

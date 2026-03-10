@@ -1,0 +1,4 @@
+---
+- name: Recharger la configuration
+  ansible.builtin.debug:
+    msg: "Configuration rechargée pour {{ serveur_web_nom }}"

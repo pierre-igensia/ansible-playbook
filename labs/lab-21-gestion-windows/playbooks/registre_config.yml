@@ -1,0 +1,33 @@
+---
+# Ce playbook nécessite une machine Windows accessible via WinRM
+- name: Configuration du registre Windows
+  hosts: windows
+  tasks:
+    - name: Désactiver Windows Update automatique
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
+        name: NoAutoUpdate
+        data: 1
+        type: dword
+
+    - name: Configurer la politique de mot de passe
+      ansible.windows.win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+        name: MaximumPasswordAge
+        data: 90
+        type: dword
+
+    - name: Désactiver le pare-feu pour le profil domaine (lab uniquement)
+      ansible.windows.win_shell: |
+        Set-NetFirewallProfile -Profile Domain -Enabled False
+      when: false  # Désactivé par sécurité - activer manuellement
+
+    - name: Lire une valeur du registre
+      ansible.windows.win_shell: |
+        Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' | Select-Object ProductName, CurrentBuild
+      register: version_windows
+      changed_when: false
+
+    - name: Afficher la version Windows
+      ansible.builtin.debug:
+        var: version_windows.stdout

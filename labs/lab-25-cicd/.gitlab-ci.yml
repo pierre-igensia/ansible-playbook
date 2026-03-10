@@ -1,0 +1,65 @@
+---
+# Pipeline GitLab CI pour Ansible
+stages:
+  - lint
+  - syntax
+  - test
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  ANSIBLE_FORCE_COLOR: "true"
+
+cache:
+  paths:
+    - .cache/pip
+
+lint:
+  stage: lint
+  image: python:3.12-slim
+  script:
+    - pip install ansible ansible-lint yamllint
+    - yamllint .
+    - ansible-lint
+
+syntax-check:
+  stage: syntax
+  image: python:3.12-slim
+  script:
+    - pip install ansible
+    - find . -name "*.yml" -path "*/playbooks/*" -exec ansible-playbook {} --syntax-check \;
+
+molecule-test:
+  stage: test
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+  before_script:
+    - apk add --no-cache python3 py3-pip
+    - pip install ansible molecule molecule-plugins[docker]
+  script:
+    - cd roles/mon-role/
+    - molecule test
+  allow_failure: true
+
+deploy-staging:
+  stage: deploy
+  image: python:3.12-slim
+  script:
+    - pip install ansible
+    - ansible-playbook -i inventory/staging playbooks/site.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: manual
+
+deploy-production:
+  stage: deploy
+  image: python:3.12-slim
+  script:
+    - pip install ansible
+    - ansible-playbook -i inventory/production playbooks/site.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual

@@ -1,0 +1,14 @@
+# Configuration de l'application
+# Généré par Ansible - NE PAS MODIFIER MANUELLEMENT
+
+SECRET_KEY = '{{ app_secret_key }}'
+DEBUG = {{ 'True' if app_environnement == 'development' else 'False' }}
+ENV = '{{ app_environnement }}'
+
+# Base de données
+DATABASE_URI = 'postgresql://{{ db_utilisateur }}:{{ db_mot_de_passe }}@localhost:{{ db_port }}/{{ db_nom }}'
+
+# Application
+APP_NAME = '{{ app_nom }}'
+APP_PORT = {{ app_port }}
+WORKERS = {{ app_workers }}

@@ -1,0 +1,41 @@
+---
+# Ce playbook documente l'installation d'AWX
+# L'installation réelle se fait via awx-operator (Kubernetes) ou Docker
+- name: Guide d'installation AWX
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "📋 Méthodes d'installation AWX"
+      ansible.builtin.debug:
+        msg: |
+          === Installation AWX ===
+
+          Méthode 1 : AWX Operator (recommandée pour la production)
+          ---------------------------------------------------------
+          1. Installer Minikube ou un cluster K8s
+          2. Installer l'AWX Operator via Helm ou Kustomize
+          3. Déployer une instance AWX
+
+          kubectl apply -k .
+          # Voir : https://github.com/ansible/awx-operator
+
+          Méthode 2 : Docker Compose (pour le lab)
+          -----------------------------------------
+          1. git clone https://github.com/ansible/awx.git
+          2. cd awx
+          3. make docker-compose-build
+          4. make docker-compose
+
+          Accès :
+          - URL : http://localhost:8043
+          - Utilisateur : admin
+          - Mot de passe : password
+
+    - name: "📦 Prérequis système"
+      ansible.builtin.debug:
+        msg: |
+          - Docker >= 20.10
+          - Docker Compose >= 2.0
+          - RAM >= 4 Go
+          - CPU >= 2 cœurs
+          - Espace disque >= 10 Go

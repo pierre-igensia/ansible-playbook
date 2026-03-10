@@ -1,0 +1,52 @@
+---
+- name: Vérification post-déploiement
+  hosts: local
+  gather_facts: true
+  vars:
+    rapport_dir: "{{ projet_racine }}/verification"
+  tasks:
+    - name: Créer le répertoire de vérification
+      ansible.builtin.file:
+        path: "{{ rapport_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Vérifier les composants déployés
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: checks
+      loop:
+        - { nom: "Base de données", path: "{{ projet_racine }}/database" }
+        - { nom: "Application", path: "{{ projet_racine }}/app" }
+        - { nom: "Load balancer", path: "{{ projet_racine }}/nginx" }
+        - { nom: "Monitoring", path: "{{ projet_racine }}/monitoring" }
+        - { nom: "App config", path: "{{ projet_racine }}/app/config.py" }
+        - { nom: "NGINX config", path: "{{ projet_racine }}/nginx/nginx.conf" }
+      loop_control:
+        label: "{{ item.nom }}"
+
+    - name: Générer le rapport de vérification
+      ansible.builtin.copy:
+        content: |
+          === Rapport de vérification post-déploiement ===
+          Projet : {{ projet_nom }} v{{ projet_version }}
+          Date : {{ ansible_date_time.iso8601 }}
+          Hôte : {{ inventory_hostname }}
+
+          --- Composants ---
+          {% for check in checks.results %}
+          {{ check.item.nom | ljust(18) }}: {{ '✅ OK' if check.stat.exists else '❌ ABSENT' }}
+          {% endfor %}
+
+          === Résultat : {{ 'SUCCÈS' if checks.results[:3] | map(attribute='stat.exists') | list is all else 'ÉCHEC' }} ===
+        dest: "{{ rapport_dir }}/rapport.txt"
+        mode: '0644'
+
+    - name: Afficher le rapport
+      ansible.builtin.command: cat {{ rapport_dir }}/rapport.txt
+      register: rapport
+      changed_when: false
+
+    - name: Rapport de vérification
+      ansible.builtin.debug:
+        var: rapport.stdout_lines

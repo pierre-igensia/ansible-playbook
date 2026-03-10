@@ -1,0 +1,28 @@
+---
+# Ce playbook nécessite une machine Windows accessible via WinRM
+- name: Installation de logiciels via Chocolatey
+  hosts: windows
+  tasks:
+    - name: S'assurer que Chocolatey est installé
+      chocolatey.chocolatey.win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Installer les outils de développement
+      chocolatey.chocolatey.win_chocolatey:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - notepadplusplus
+        - 7zip
+        - vscode
+
+    - name: Vérifier les packages installés
+      ansible.windows.win_shell: choco list --local-only
+      register: choco_list
+      changed_when: false
+
+    - name: Afficher les packages installés
+      ansible.builtin.debug:
+        var: choco_list.stdout_lines

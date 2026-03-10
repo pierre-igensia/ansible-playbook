@@ -1,0 +1,46 @@
+---
+# Ce playbook illustre le durcissement SSH
+# À exécuter sur des serveurs réels avec become: true
+- name: Durcissement de la configuration SSH
+  hosts: local
+  gather_facts: true
+  vars:
+    sshd_config_params:
+      PermitRootLogin: "no"
+      PasswordAuthentication: "no"
+      PubkeyAuthentication: "yes"
+      MaxAuthTries: "3"
+      LoginGraceTime: "30"
+      X11Forwarding: "no"
+      AllowTcpForwarding: "no"
+      ClientAliveInterval: "300"
+      ClientAliveCountMax: "2"
+  tasks:
+    - name: Créer le répertoire de démonstration
+      ansible.builtin.file:
+        path: /tmp/securite_demo/ssh
+        state: directory
+        mode: '0755'
+
+    - name: Générer la configuration SSH durcie (simulation)
+      ansible.builtin.template:
+        src: sshd_config.j2
+        dest: /tmp/securite_demo/ssh/sshd_config
+        mode: '0644'
+
+    - name: Afficher la configuration générée
+      ansible.builtin.command: cat /tmp/securite_demo/ssh/sshd_config
+      register: sshd_config
+      changed_when: false
+
+    - name: Configuration SSH durcie
+      ansible.builtin.debug:
+        var: sshd_config.stdout_lines
+
+    - name: Résumé des durcissements
+      ansible.builtin.debug:
+        msg: |
+          === Durcissements SSH appliqués ===
+          {% for param, valeur in sshd_config_params.items() %}
+          ✅ {{ param }} = {{ valeur }}
+          {% endfor %}

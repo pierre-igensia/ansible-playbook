@@ -1,0 +1,21 @@
+---
+# Variables globales du projet final
+projet_nom: "app-multi-tiers"
+projet_version: "1.0.0"
+projet_racine: /tmp/projet-final
+
+# Base de données
+db_nom: "appdb"
+db_utilisateur: "appuser"
+db_port: 5432
+
+# Application
+app_nom: "mon-application"
+app_port: 8080
+app_environnement: "production"
+app_secret_key: "changez-moi-en-production"
+
+# Load balancer
+lb_port: 80
+lb_serveur_nom: "app.formation.local"
+

@@ -1,0 +1,64 @@
+---
+- name: Démonstration de l'API AWX
+  hosts: local
+  gather_facts: false
+  vars:
+    awx_url: "http://localhost:8043"
+    awx_user: "admin"
+    awx_password: "password"
+  tasks:
+    - name: "📋 Endpoints API AWX principaux"
+      ansible.builtin.debug:
+        msg: |
+          === API REST AWX ===
+          Base URL : {{ awx_url }}/api/v2/
+
+          Endpoints principaux :
+          - /api/v2/ping/              → Vérifier la santé
+          - /api/v2/organizations/     → Organisations
+          - /api/v2/projects/          → Projets (dépôts Git)
+          - /api/v2/inventories/       → Inventaires
+          - /api/v2/credentials/       → Identifiants
+          - /api/v2/job_templates/     → Modèles de jobs
+          - /api/v2/workflow_job_templates/ → Workflows
+          - /api/v2/jobs/              → Historique des exécutions
+
+    - name: "🔧 Exemple : Lancer un job via API"
+      ansible.builtin.debug:
+        msg: |
+          curl -X POST -u {{ awx_user }}:{{ awx_password }} \
+            {{ awx_url }}/api/v2/job_templates/1/launch/ \
+            -H "Content-Type: application/json" \
+            -d '{"extra_vars": {"env": "staging"}}'
+
+    - name: "📊 Exemple : Vérifier le statut d'un job"
+      ansible.builtin.debug:
+        msg: |
+          curl -s -u {{ awx_user }}:{{ awx_password }} \
+            {{ awx_url }}/api/v2/jobs/1/ \
+            | python3 -m json.tool | grep status
+
+    - name: Créer un fichier de résumé
+      ansible.builtin.copy:
+        content: |
+          === Guide API AWX ===
+
+          1. Authentification : Basic Auth ou Token
+          2. Format : JSON
+          3. Pagination : ?page=1&page_size=10
+          4. Filtrage : ?name__contains=prod
+          5. Tri : ?order_by=name
+
+          Workflow typique :
+          1. Créer Organisation
+          2. Créer Projet (lié à Git)
+          3. Créer Inventaire + Hosts
+          4. Créer Credentials
+          5. Créer Job Template
+          6. Lancer le Job
+        dest: /tmp/awx_api_guide.txt
+        mode: '0644'
+
+    - name: "✅ Résumé"
+      ansible.builtin.debug:
+        msg: "Guide API AWX sauvegardé dans /tmp/awx_api_guide.txt"

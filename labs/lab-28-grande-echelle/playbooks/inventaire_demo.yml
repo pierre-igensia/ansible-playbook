@@ -1,0 +1,53 @@
+---
+- name: Démonstration de l'organisation de l'inventaire
+  hosts: local
+  gather_facts: false
+  vars:
+    environnements:
+      - nom: development
+        serveurs: 5
+        strategie: free
+      - nom: staging
+        serveurs: 10
+        strategie: linear
+      - nom: production
+        serveurs: 50
+        strategie: linear
+        serial: "25%"
+  tasks:
+    - name: "📁 Structure d'inventaire recommandée"
+      ansible.builtin.debug:
+        msg: |
+          inventaire/
+          ├── production/
+          │   ├── hosts.yml
+          │   ├── group_vars/
+          │   │   ├── all.yml
+          │   │   ├── webservers.yml
+          │   │   └── databases.yml
+          │   └── host_vars/
+          │       └── web01.yml
+          ├── staging/
+          │   ├── hosts.yml
+          │   └── group_vars/
+          └── development/
+              ├── hosts.yml
+              └── group_vars/
+
+    - name: "📊 Résumé par environnement"
+      ansible.builtin.debug:
+        msg: "{{ item.nom }} : {{ item.serveurs }} serveurs, stratégie {{ item.strategie }}"
+      loop: "{{ environnements }}"
+
+    - name: "💡 Commandes par environnement"
+      ansible.builtin.debug:
+        msg: |
+          # Déployer en development
+          ansible-playbook -i inventaire/development/ site.yml
+
+          # Déployer en staging
+          ansible-playbook -i inventaire/staging/ site.yml
+
+          # Déployer en production (avec confirmation)
+          ansible-playbook -i inventaire/production/ site.yml --check
+          ansible-playbook -i inventaire/production/ site.yml

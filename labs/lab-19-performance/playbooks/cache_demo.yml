@@ -1,0 +1,24 @@
+---
+- name: Démonstration du cache de faits
+  hosts: local
+  gather_facts: true
+  vars:
+    ansible_cache_plugin: jsonfile
+    ansible_cache_plugin_connection: /tmp/ansible_facts_cache
+    ansible_cache_plugin_timeout: 86400
+  tasks:
+    - name: Afficher les informations système (depuis les faits)
+      ansible.builtin.debug:
+        msg: >
+          OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          | Kernel : {{ ansible_kernel }}
+          | CPU : {{ ansible_processor_count }} processeur(s)
+          | RAM : {{ ansible_memtotal_mb }} Mo
+
+    - name: Afficher l'adresse IP
+      ansible.builtin.debug:
+        msg: "Adresse IP par défaut : {{ ansible_default_ipv4.address | default('N/A') }}"
+
+    - name: Confirmer le fonctionnement du cache
+      ansible.builtin.debug:
+        msg: "Les faits sont maintenant en cache dans /tmp/ansible_facts_cache/"

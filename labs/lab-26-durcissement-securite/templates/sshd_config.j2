@@ -1,0 +1,27 @@
+# Configuration SSH durcie
+# Généré par Ansible - Lab 26
+
+# Authentification
+PermitRootLogin {{ sshd_config_params.PermitRootLogin }}
+PasswordAuthentication {{ sshd_config_params.PasswordAuthentication }}
+PubkeyAuthentication {{ sshd_config_params.PubkeyAuthentication }}
+MaxAuthTries {{ sshd_config_params.MaxAuthTries }}
+LoginGraceTime {{ sshd_config_params.LoginGraceTime }}
+
+# Transferts
+X11Forwarding {{ sshd_config_params.X11Forwarding }}
+AllowTcpForwarding {{ sshd_config_params.AllowTcpForwarding }}
+
+# Keep-alive
+ClientAliveInterval {{ sshd_config_params.ClientAliveInterval }}
+ClientAliveCountMax {{ sshd_config_params.ClientAliveCountMax }}
+
+# Journalisation
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+# Divers
+UsePAM yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server

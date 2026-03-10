@@ -1,0 +1,25 @@
+---
+- name: Créer le répertoire de monitoring
+  ansible.builtin.file:
+    path: "{{ monitoring_racine }}"
+    state: directory
+    mode: '0755'
+
+- name: Déployer le script de collecte de métriques
+  ansible.builtin.template:
+    src: collecteur.sh.j2
+    dest: "{{ monitoring_racine }}/collecteur.sh"
+    mode: '0755'
+
+- name: Déployer la configuration du monitoring
+  ansible.builtin.template:
+    src: monitoring.conf.j2
+    dest: "{{ monitoring_racine }}/monitoring.conf"
+    mode: '0644'
+  notify: Redémarrer le monitoring
+
+- name: Journaliser le déploiement du monitoring
+  ansible.builtin.copy:
+    content: "Monitoring configuré (intervalle : {{ monitoring_interval }}s) - {{ ansible_date_time.iso8601 }}\n"
+    dest: "{{ monitoring_racine }}/deploy.log"
+    mode: '0644'

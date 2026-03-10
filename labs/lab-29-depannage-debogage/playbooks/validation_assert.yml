@@ -1,0 +1,53 @@
+---
+- name: Validation de l'environnement avec assert
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Vérifier le système d'exploitation
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family in ['Debian', 'RedHat', 'Darwin', 'Suse']
+        fail_msg: "OS non supporté : {{ ansible_os_family }}"
+        success_msg: "OS supporté : {{ ansible_os_family }}"
+
+    - name: Vérifier la mémoire disponible
+      ansible.builtin.assert:
+        that:
+          - ansible_memtotal_mb >= 512
+        fail_msg: "RAM insuffisante : {{ ansible_memtotal_mb }} Mo (minimum 512 Mo)"
+        success_msg: "RAM suffisante : {{ ansible_memtotal_mb }} Mo"
+
+    - name: Vérifier la version de Python
+      ansible.builtin.assert:
+        that:
+          - ansible_python.version.major >= 3
+          - ansible_python.version.minor >= 9
+        fail_msg: "Python {{ ansible_python.version.major }}.{{ ansible_python.version.minor }} - version 3.9+ requise"
+        success_msg: "Python {{ ansible_python.version.major }}.{{ ansible_python.version.minor }} OK"
+
+    - name: Vérifier l'espace disque /tmp
+      ansible.builtin.command: df -k /tmp
+      register: espace_tmp
+      changed_when: false
+
+    - name: Vérifier qu'un fichier critique existe
+      ansible.builtin.stat:
+        path: /etc/hosts
+      register: etc_hosts
+
+    - name: Valider /etc/hosts
+      ansible.builtin.assert:
+        that:
+          - etc_hosts.stat.exists
+        fail_msg: "/etc/hosts n'existe pas !"
+        success_msg: "/etc/hosts existe"
+
+    - name: Résumé de la validation
+      ansible.builtin.debug:
+        msg: |
+          === Résumé de la validation ===
+          ✅ OS : {{ ansible_distribution }} {{ ansible_distribution_version }}
+          ✅ RAM : {{ ansible_memtotal_mb }} Mo
+          ✅ Python : {{ ansible_python.version.major }}.{{ ansible_python.version.minor }}
+          ✅ /etc/hosts : présent
+          === Environnement validé ===

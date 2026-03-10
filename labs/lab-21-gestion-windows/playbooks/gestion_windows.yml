@@ -1,0 +1,44 @@
+---
+# Ce playbook nécessite une machine Windows accessible via WinRM
+# Il sert de référence pour les exercices du lab
+- name: Gestion de fichiers et services Windows
+  hosts: windows
+  tasks:
+    - name: Créer un répertoire d'application
+      ansible.windows.win_file:
+        path: C:\Applications\MonApp
+        state: directory
+
+    - name: Copier un fichier de configuration
+      ansible.windows.win_copy:
+        content: |
+          [application]
+          nom=MonApp
+          version=1.0.0
+          environnement=production
+        dest: C:\Applications\MonApp\config.ini
+
+    - name: Installer la fonctionnalité IIS
+      ansible.windows.win_feature:
+        name: Web-Server
+        state: present
+        include_management_tools: true
+      register: iis_install
+
+    - name: Redémarrer si nécessaire
+      ansible.windows.win_reboot:
+      when: iis_install.reboot_required
+
+    - name: S'assurer que le service W3SVC est démarré
+      ansible.windows.win_service:
+        name: W3SVC
+        state: started
+        start_mode: auto
+
+    - name: Créer un utilisateur local
+      ansible.windows.win_user:
+        name: deploiement
+        password: "{{ vault_deploy_password | default('MotDePasse123!') }}"
+        state: present
+        groups:
+          - Administrateurs

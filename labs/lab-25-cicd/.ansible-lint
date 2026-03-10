@@ -1,0 +1,13 @@
+---
+# Configuration ansible-lint pour la formation
+exclude_paths:
+  - .github/
+  - .cache/
+
+skip_list:
+  - yaml[line-length]
+  - no-changed-when
+
+warn_list:
+  - experimental
+  - command-instead-of-module

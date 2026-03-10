@@ -1,0 +1,35 @@
+---
+- name: Créer le répertoire de l'application
+  ansible.builtin.file:
+    path: "{{ app_racine }}"
+    state: directory
+    mode: '0755'
+
+- name: Déployer l'application Flask
+  ansible.builtin.template:
+    src: app.py.j2
+    dest: "{{ app_racine }}/app.py"
+    mode: '0644'
+  notify: Redémarrer l'application
+
+- name: Déployer la configuration
+  ansible.builtin.template:
+    src: config.py.j2
+    dest: "{{ app_racine }}/config.py"
+    mode: '0600'
+  notify: Redémarrer l'application
+
+- name: Créer le fichier requirements
+  ansible.builtin.copy:
+    content: |
+      flask==3.0.0
+      gunicorn==21.2.0
+      psycopg2-binary==2.9.9
+    dest: "{{ app_racine }}/requirements.txt"
+    mode: '0644'
+
+- name: Journaliser le déploiement
+  ansible.builtin.copy:
+    content: "Application {{ app_nom }} v{{ projet_version }} déployée - {{ ansible_date_time.iso8601 }}\n"
+    dest: "{{ app_racine }}/deploy.log"
+    mode: '0644'

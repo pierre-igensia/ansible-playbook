@@ -1,0 +1,7 @@
+---
+app_nom: "mon-application"
+app_port: 8080
+app_environnement: "production"
+app_secret_key: "changez-moi-en-production"
+app_racine: "{{ projet_racine }}/app"
+app_workers: 4

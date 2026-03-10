@@ -1,0 +1,30 @@
+---
+# Point d'entrée principal du projet
+# Déploie l'application multi-tiers complète
+- name: "Étape 1 : Base de données"
+  hosts: local
+  gather_facts: true
+  tags: [database, infra]
+  roles:
+    - role: base-de-donnees
+
+- name: "Étape 2 : Serveur d'application"
+  hosts: local
+  gather_facts: false
+  tags: [application, app]
+  roles:
+    - role: serveur-web
+
+- name: "Étape 3 : Load balancer"
+  hosts: local
+  gather_facts: false
+  tags: [loadbalancer, lb]
+  roles:
+    - role: load-balancer
+
+- name: "Étape 4 : Monitoring"
+  hosts: local
+  gather_facts: false
+  tags: [monitoring]
+  roles:
+    - role: monitoring

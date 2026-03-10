@@ -1,0 +1,50 @@
+---
+- name: Intégration HashiCorp Vault
+  hosts: local
+  gather_facts: false
+  vars:
+    vault_addr: "http://localhost:8200"
+    vault_token: "formation-token"
+  tasks:
+    - name: Vérifier que Vault est accessible
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/health"
+        method: GET
+        status_code: 200
+      register: vault_health
+      ignore_errors: true
+
+    - name: Afficher le statut de Vault
+      ansible.builtin.debug:
+        msg: "Vault est {{ 'accessible' if vault_health is success else 'inaccessible - lancez le conteneur Docker' }}"
+
+    - name: Lire un secret depuis Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/secret/data/database"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        return_content: true
+      register: vault_secret
+      when: vault_health is success
+      no_log: true
+
+    - name: Utiliser le secret (masqué)
+      ansible.builtin.copy:
+        content: |
+          [database]
+          host=db.exemple.com
+          port=5432
+          username={{ (vault_secret.json.data.data.username | default('admin')) }}
+          password=***MASQUÉ***
+        dest: /tmp/db_config_vault.conf
+        mode: '0600'
+      when: vault_health is success
+
+    - name: Résumé
+      ansible.builtin.debug:
+        msg: |
+          === Intégration HashiCorp Vault ===
+          Statut : {{ 'OK' if vault_health is success else 'Vault non disponible' }}
+          Méthode : API REST avec token
+          Alternative : plugin lookup community.hashi_vault

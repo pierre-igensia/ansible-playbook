@@ -1,0 +1,46 @@
+---
+- name: Bonnes pratiques de sécurité Ansible
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Créer le répertoire de démonstration
+      ansible.builtin.file:
+        path: /tmp/securite_demo
+        state: directory
+        mode: '0755'
+
+    - name: Définir un secret (masqué avec no_log)
+      ansible.builtin.set_fact:
+        mot_de_passe_db: "SuperSecretPassword123!"
+        cle_api: "sk-1234567890abcdef"
+      no_log: true
+
+    - name: Écrire la configuration avec le secret (masqué)
+      ansible.builtin.copy:
+        content: |
+          [database]
+          password={{ mot_de_passe_db }}
+          [api]
+          key={{ cle_api }}
+        dest: /tmp/securite_demo/app.conf
+        mode: '0600'
+      no_log: true
+
+    - name: Vérifier les permissions (ne nécessite pas become)
+      ansible.builtin.stat:
+        path: /tmp/securite_demo/app.conf
+      register: fichier_conf
+
+    - name: Confirmer les permissions restrictives
+      ansible.builtin.assert:
+        that:
+          - fichier_conf.stat.mode == '0600'
+        fail_msg: "Les permissions ne sont pas assez restrictives"
+        success_msg: "Permissions correctes : 0600"
+
+    - name: Afficher les bonnes pratiques
+      ansible.builtin.debug:
+        msg: |
+          ✅ no_log utilisé pour les données sensibles
+          ✅ Permissions fichier restrictives (0600)
+          ✅ become non utilisé (pas nécessaire ici)

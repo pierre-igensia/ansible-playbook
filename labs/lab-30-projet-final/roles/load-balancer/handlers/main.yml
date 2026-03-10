@@ -1,0 +1,4 @@
+---
+- name: Recharger NGINX
+  ansible.builtin.debug:
+    msg: "NGINX rechargé avec la nouvelle configuration"

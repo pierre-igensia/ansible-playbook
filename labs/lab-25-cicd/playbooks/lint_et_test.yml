@@ -1,0 +1,34 @@
+---
+- name: Playbook de démonstration CI/CD
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Afficher les informations système
+      ansible.builtin.debug:
+        msg: "Système : {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Créer un répertoire de test
+      ansible.builtin.file:
+        path: /tmp/cicd_demo
+        state: directory
+        mode: "0755"
+
+    - name: Générer un rapport de build
+      ansible.builtin.copy:
+        content: |
+          === Rapport CI/CD ===
+          Date : {{ ansible_date_time.iso8601 }}
+          Hôte : {{ inventory_hostname }}
+          OS : {{ ansible_distribution }}
+          Status : SUCCESS
+        dest: /tmp/cicd_demo/rapport_build.txt
+        mode: "0644"
+
+    - name: Vérifier le rapport
+      ansible.builtin.command: cat /tmp/cicd_demo/rapport_build.txt
+      register: rapport
+      changed_when: false
+
+    - name: Afficher le rapport
+      ansible.builtin.debug:
+        var: rapport.stdout_lines

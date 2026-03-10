@@ -1,0 +1,30 @@
+"""
+{{ app_nom }} - Application Flask
+Version : {{ projet_version }}
+Environnement : {{ app_environnement }}
+Généré par Ansible
+"""
+
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+app.config.from_object('config')
+
+
+@app.route('/')
+def index():
+    return jsonify({
+        'application': '{{ app_nom }}',
+        'version': '{{ projet_version }}',
+        'environnement': '{{ app_environnement }}',
+        'statut': 'ok'
+    })
+
+
+@app.route('/health')
+def health():
+    return jsonify({'statut': 'ok'}), 200
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port={{ app_port }})

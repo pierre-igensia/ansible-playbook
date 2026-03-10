@@ -1,0 +1,17 @@
+# Configuration du monitoring
+# Généré par Ansible
+
+[general]
+actif = {{ 'true' if monitoring_actif else 'false' }}
+intervalle = {{ monitoring_interval }}
+log_dir = {{ monitoring_racine }}/logs
+
+[services]
+{% for service in monitoring_services %}
+{{ service.nom }} = {{ service.port }}
+{% endfor %}
+
+[alertes]
+seuil_cpu = 80
+seuil_ram = 90
+seuil_disque = 85

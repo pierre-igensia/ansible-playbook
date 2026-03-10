@@ -1,0 +1,8 @@
+---
+monitoring_actif: true
+monitoring_interval: 60
+monitoring_racine: "{{ projet_racine }}/monitoring"
+monitoring_services:
+  - { nom: "nginx", port: 80 }
+  - { nom: "application", port: 8080 }
+  - { nom: "postgresql", port: 5432 }

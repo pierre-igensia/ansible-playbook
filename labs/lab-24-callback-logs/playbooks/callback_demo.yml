@@ -1,0 +1,36 @@
+---
+- name: Démonstration des callbacks
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Collecter des informations système
+      ansible.builtin.debug:
+        msg: "OS : {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Créer un fichier de test
+      ansible.builtin.copy:
+        content: "Test des plugins de callback - {{ ansible_date_time.iso8601 }}\n"
+        dest: /tmp/callback_test.txt
+        mode: '0644'
+
+    - name: Simuler un traitement lent
+      ansible.builtin.command: sleep 2
+      changed_when: false
+
+    - name: Lire le fichier créé
+      ansible.builtin.command: cat /tmp/callback_test.txt
+      register: contenu
+      changed_when: false
+
+    - name: Afficher le résultat
+      ansible.builtin.debug:
+        var: contenu.stdout
+
+    - name: Tâche avec une condition
+      ansible.builtin.debug:
+        msg: "Cette tâche ne s'exécute que sur Debian"
+      when: ansible_os_family == "Debian"
+
+    - name: Résumé final
+      ansible.builtin.debug:
+        msg: "Démonstration des callbacks terminée avec succès"

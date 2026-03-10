@@ -1,0 +1,56 @@
+---
+- name: Démonstration de rolling update
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Créer le répertoire de déploiement
+      ansible.builtin.file:
+        path: /tmp/rolling_update
+        state: directory
+        mode: '0755'
+
+    - name: "📋 Explication du rolling update"
+      ansible.builtin.debug:
+        msg: |
+          === Rolling Update ===
+          Avec serial: 2, sur 6 serveurs :
+          Lot 1 : [web01, web02] → déployer → vérifier
+          Lot 2 : [web03, web04] → déployer → vérifier
+          Lot 3 : [web05, web06] → déployer → vérifier
+
+          Avec serial: "25%", sur 8 serveurs :
+          Lot 1 : [web01, web02] (25%) → déployer
+          Lot 2 : [web03, web04] (25%) → déployer
+          Lot 3 : [web05, web06] (25%) → déployer
+          Lot 4 : [web07, web08] (25%) → déployer
+
+          Avec serial: [1, 5, "100%"] (canary) :
+          Lot 1 : [web01] (canary) → déployer → vérifier
+          Lot 2 : [web02-web06] → déployer → vérifier
+          Lot 3 : [reste] → déployer → vérifier
+
+    - name: "Étape 1 – Retirer du load balancer"
+      ansible.builtin.copy:
+        content: "{{ inventory_hostname }} retiré du pool - {{ ansible_date_time.iso8601 }}\n"
+        dest: /tmp/rolling_update/step1_lb_remove.log
+        mode: '0644'
+
+    - name: "Étape 2 – Déployer la mise à jour"
+      ansible.builtin.command: sleep 1
+      changed_when: false
+
+    - name: "Étape 3 – Health check"
+      ansible.builtin.copy:
+        content: "Health check OK - {{ inventory_hostname }}\n"
+        dest: /tmp/rolling_update/step3_health.log
+        mode: '0644'
+
+    - name: "Étape 4 – Réinsérer dans le load balancer"
+      ansible.builtin.copy:
+        content: "{{ inventory_hostname }} réinséré dans le pool\n"
+        dest: /tmp/rolling_update/step4_lb_add.log
+        mode: '0644'
+
+    - name: Résumé
+      ansible.builtin.debug:
+        msg: "Rolling update simulé avec succès pour {{ inventory_hostname }}"

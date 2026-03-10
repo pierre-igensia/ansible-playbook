@@ -1,0 +1,17 @@
+---
+- name: Afficher le début du déploiement
+  hosts: local
+  gather_facts: true
+  tasks:
+    - name: Informations de déploiement
+      ansible.builtin.debug:
+        msg: |
+          === Déploiement de {{ projet_nom }} v{{ projet_version }} ===
+          Environnement : {{ app_environnement }}
+          Date : {{ ansible_date_time.iso8601 }}
+
+- name: Déployer l'infrastructure
+  ansible.builtin.import_playbook: site.yml
+
+- name: Vérifier le déploiement
+  ansible.builtin.import_playbook: verification.yml

@@ -1,0 +1,71 @@
+---
+- name: Simulation de l'automatisation réseau
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Créer le répertoire de simulation
+      ansible.builtin.file:
+        path: /tmp/reseau_demo
+        state: directory
+        mode: '0755'
+
+    - name: "📋 Types de connexion réseau"
+      ansible.builtin.debug:
+        msg: |
+          === Types de connexion réseau Ansible ===
+          1. network_cli  → CLI standard via SSH (Cisco IOS, Arista EOS, etc.)
+          2. httpapi       → API REST (Arista eAPI, F5, etc.)
+          3. netconf       → Protocole NETCONF XML (Juniper, etc.)
+          4. local         → Exécution locale (NAPALM, API custom)
+
+    - name: "🔧 Simuler une sauvegarde de configuration"
+      ansible.builtin.copy:
+        content: |
+          ! Configuration simulée - Router R1
+          hostname R1
+          !
+          interface GigabitEthernet0/0
+           ip address 10.0.0.1 255.255.255.0
+           no shutdown
+          !
+          interface GigabitEthernet0/1
+           ip address 192.168.1.1 255.255.255.0
+           no shutdown
+          !
+          router ospf 1
+           network 10.0.0.0 0.0.0.255 area 0
+           network 192.168.1.0 0.0.0.255 area 0
+          !
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+        dest: /tmp/reseau_demo/R1_backup.cfg
+        mode: '0644'
+
+    - name: "📊 Simuler la collecte de faits réseau"
+      ansible.builtin.copy:
+        content: |
+          {
+            "ansible_net_hostname": "R1",
+            "ansible_net_model": "ISR4431/K9",
+            "ansible_net_version": "16.12.4",
+            "ansible_net_serialnum": "FTX1234ABCD",
+            "ansible_net_interfaces": {
+              "GigabitEthernet0/0": {
+                "ipv4": [{"address": "10.0.0.1", "subnet": "24"}],
+                "operstatus": "up"
+              },
+              "GigabitEthernet0/1": {
+                "ipv4": [{"address": "192.168.1.1", "subnet": "24"}],
+                "operstatus": "up"
+              }
+            }
+          }
+        dest: /tmp/reseau_demo/R1_facts.json
+        mode: '0644'
+
+    - name: "✅ Simulation terminée"
+      ansible.builtin.debug:
+        msg: "Fichiers de simulation créés dans /tmp/reseau_demo/"

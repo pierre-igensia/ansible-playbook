@@ -1,0 +1,25 @@
+---
+- name: Créer le répertoire de la base de données
+  ansible.builtin.file:
+    path: "{{ db_racine }}/data"
+    state: directory
+    mode: '0700'
+
+- name: Générer la configuration PostgreSQL
+  ansible.builtin.template:
+    src: postgresql.conf.j2
+    dest: "{{ db_racine }}/postgresql.conf"
+    mode: '0644'
+  notify: Recharger la base de données
+
+- name: Créer le script d'initialisation
+  ansible.builtin.template:
+    src: init.sql.j2
+    dest: "{{ db_racine }}/init.sql"
+    mode: '0644'
+
+- name: Journaliser le déploiement de la base de données
+  ansible.builtin.copy:
+    content: "Base de données {{ db_nom }} configurée - {{ ansible_date_time.iso8601 }}\n"
+    dest: "{{ db_racine }}/deploy.log"
+    mode: '0644'

@@ -1,0 +1,6 @@
+---
+db_nom: "appdb"
+db_utilisateur: "appuser"
+db_mot_de_passe: "changez-moi"
+db_port: 5432
+db_racine: "{{ projet_racine }}/database"
