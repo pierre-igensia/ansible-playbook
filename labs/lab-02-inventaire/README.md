@@ -62,7 +62,8 @@ Les répertoires `host_vars/` et `group_vars/` permettent de définir des variab
 
 ```
 inventory/
-├── mononode.yml
+├── multinodes.ini     # Inventaire au format INI
+├── multinodes.yml     # Inventaire au format YAML
 ├── host_vars/
 │   └── web01.yml      # Variables spécifiques à web01
 └── group_vars/
@@ -85,10 +86,10 @@ inventory/
 ### Exercice 1 – Explorer l'inventaire INI
 **But :** Comprendre la structure d'un inventaire INI et lister ses hôtes.
 **Instructions :**
-1. Ouvrir le fichier `inventory/mononode.yml`
-2. Lister tous les hôtes : `ansible all --list-hosts`
-3. Lister uniquement les serveurs web : `ansible webservers --list-hosts`
-4. Lister le groupe `production` : `ansible production --list-hosts`
+1. Ouvrir le fichier `inventory/multinodes.ini`
+2. Lister tous les hôtes : `ansible all --list-hosts -i inventory/multinodes.ini`
+3. Lister uniquement les serveurs web : `ansible webservers --list-hosts -i inventory/multinodes.ini`
+4. Lister le groupe `production` : `ansible production --list-hosts -i inventory/multinodes.ini`
 
 **Questions :**
 - Combien d'hôtes appartiennent au groupe `production` ?
@@ -103,12 +104,12 @@ inventory/
     lb01
 ```
 
-### Exercice 2 – Convertir en YAML
+### Exercice 2 – Comparer INI et YAML
 **But :** Comparer les formats INI et YAML.
 **Instructions :**
-1. Ouvrir `inventory/hosts.yml`
-2. Comparer la structure avec `inventory/mononode.yml`
-3. Lister les hôtes depuis l'inventaire YAML : `ansible all --list-hosts -i inventory/hosts.yml`
+1. Ouvrir `inventory/multinodes.yml`
+2. Comparer la structure avec `inventory/multinodes.ini`
+3. Lister les hôtes depuis l'inventaire YAML : `ansible all --list-hosts -i inventory/multinodes.yml`
 4. Vérifier que le résultat est identique à celui de l'inventaire INI
 
 **Questions :**
@@ -121,7 +122,7 @@ inventory/
 1. Ouvrir `inventory/host_vars/web01.yml` et `inventory/group_vars/webservers.yml`
 2. Inspecter les variables effectives d'un hôte :
    ```bash
-   ansible-inventory -i inventory/hosts.yml --host web01
+   ansible-inventory -i inventory/multinodes.yml --host web01
    ```
 3. Observer quelle valeur de `http_port` est utilisée pour `web01` (host_vars ou group_vars ?)
 
@@ -149,17 +150,17 @@ ansible all --list-hosts
 ansible webservers --list-hosts
 
 # Lister les hôtes depuis l'inventaire YAML
-ansible all --list-hosts -i inventory/hosts.yml
+ansible all --list-hosts -i inventory/multinodes.yml
 
 # Vérifier les variables d'un hôte spécifique
-ansible-inventory -i inventory/hosts.yml --host web01
+ansible-inventory -i inventory/multinodes.yml --host web01
 ```
 
 ## 🔍 Pour aller plus loin
 - [Documentation sur les inventaires](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html)
 - [group_vars et host_vars](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html#organizing-host-and-group-variables)
 - [Inventaires dynamiques](https://docs.ansible.com/ansible/latest/inventory_guide/intro_dynamic_inventory.html)
-- **Défi 1** : Utiliser la commande `ansible-inventory --graph -i inventory/hosts.yml` pour afficher l'arborescence des groupes
+- **Défi 1** : Utiliser la commande `ansible-inventory --graph -i inventory/multinodes.yml` pour afficher l'arborescence des groupes
 - **Défi 2** : Créer un inventaire dynamique avec un script Python simple qui retourne des hôtes au format JSON
 
 ## 💡 Solutions
@@ -184,7 +185,7 @@ ansible production --list-hosts
 ```bash
 # Les deux commandes donnent le même résultat
 ansible all --list-hosts
-ansible all --list-hosts -i inventory/hosts.yml
+ansible all --list-hosts -i inventory/multinodes.yml
 
 # Différences : YAML est plus verbeux mais plus structuré ;
 # INI est plus compact mais moins flexible pour les structures complexes.
@@ -193,7 +194,7 @@ ansible all --list-hosts -i inventory/hosts.yml
 ### Solution Exercice 3
 ```bash
 # Inspecter les variables effectives de web01
-ansible-inventory -i inventory/hosts.yml --host web01
+ansible-inventory -i inventory/multinodes.yml --host web01
 
 # Les host_vars ont PRIORITÉ sur les group_vars.
 # web01 utilise http_port=80 défini dans host_vars/web01.yml.
