@@ -1,0 +1,17 @@
+---
+# Configuration de l'application
+app_name: "mon-app-web"
+app_version: "2.1.0"
+app_port: 8080
+app_environment: "développement"
+
+# Configuration base de données
+db_host: "localhost"
+db_port: 5432
+db_name: "myapp_db"
+db_user: "appuser"
+
+# Configuration serveur
+server_timezone: "Europe/Paris"
+server_locale: "fr_FR.UTF-8"
+max_workers: 4

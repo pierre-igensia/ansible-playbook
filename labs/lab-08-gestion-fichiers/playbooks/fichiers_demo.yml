@@ -1,0 +1,86 @@
+---
+- name: Démonstration de la gestion des fichiers
+  hosts: local
+  gather_facts: true
+  vars:
+    demo_dir: /tmp/fichiers_demo
+    app_name: "mon-service"
+    app_version: "3.0.0"
+    app_environment: "développement"
+    server_port: 8080
+    db_host: "localhost"
+    db_name: "monservice_db"
+    db_ssl: false
+    log_level: "DEBUG"
+
+  tasks:
+    - name: Créer la structure de répertoires
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ demo_dir }}"
+        - "{{ demo_dir }}/config"
+        - "{{ demo_dir }}/logs"
+        - "{{ demo_dir }}/data"
+
+    - name: Créer un fichier vide
+      ansible.builtin.file:
+        path: "{{ demo_dir }}/logs/app.log"
+        state: touch
+        mode: '0644'
+
+    - name: Copier un fichier avec contenu
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          # Script de démarrage pour {{ app_name }}
+          echo "Démarrage de {{ app_name }} v{{ app_version }}..."
+          exec /usr/bin/{{ app_name }} --config /etc/{{ app_name }}/config.conf
+        dest: "{{ demo_dir }}/start.sh"
+        mode: '0755'
+
+    - name: Générer la configuration depuis un template
+      ansible.builtin.template:
+        src: ../templates/app.conf.j2
+        dest: "{{ demo_dir }}/config/app.conf"
+        mode: '0644'
+
+    - name: Utiliser lineinfile pour modifier une ligne
+      ansible.builtin.lineinfile:
+        path: "{{ demo_dir }}/config/app.conf"
+        regexp: '^version='
+        line: "version={{ app_version }}-patched"
+        backup: true
+
+    - name: Ajouter un bloc de configuration
+      ansible.builtin.blockinfile:
+        path: "{{ demo_dir }}/config/app.conf"
+        marker: "# {mark} BLOC ANSIBLE GÉRÉ"
+        block: |
+          [métriques]
+          activé=true
+          port=9090
+          chemin=/metrics
+
+    - name: Vérifier les permissions
+      ansible.builtin.file:
+        path: "{{ demo_dir }}/config/app.conf"
+        mode: '0640'
+
+    - name: Créer un lien symbolique
+      ansible.builtin.file:
+        src: "{{ demo_dir }}/config/app.conf"
+        dest: "{{ demo_dir }}/config/current.conf"
+        state: link
+
+    - name: Afficher le contenu final
+      ansible.builtin.command:
+        cmd: "cat {{ demo_dir }}/config/app.conf"
+      register: config_content
+      changed_when: false
+
+    - name: Montrer le résultat
+      ansible.builtin.debug:
+        var: config_content.stdout_lines

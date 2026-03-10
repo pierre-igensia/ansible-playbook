@@ -1,0 +1,52 @@
+---
+- name: Démonstration des conditions
+  hosts: local
+  gather_facts: true
+  vars:
+    env: "production"
+    app_version: "2.0"
+    min_memory_mb: 512
+
+  tasks:
+    - name: Tâche spécifique à Linux
+      ansible.builtin.debug:
+        msg: "Je suis sur Linux!"
+      when: ansible_os_family in ["Debian", "RedHat", "Archlinux"]
+
+    - name: Vérification de mémoire suffisante
+      ansible.builtin.debug:
+        msg: "Mémoire suffisante: {{ ansible_memtotal_mb }} MB"
+      when: ansible_memtotal_mb >= min_memory_mb
+
+    - name: Alerte mémoire insuffisante
+      ansible.builtin.debug:
+        msg: "ATTENTION: Mémoire insuffisante ({{ ansible_memtotal_mb }} MB < {{ min_memory_mb }} MB)"
+      when: ansible_memtotal_mb < min_memory_mb
+
+    - name: Condition multiple (ET)
+      ansible.builtin.debug:
+        msg: "Production ET version 2.0"
+      when:
+        - env == "production"
+        - app_version is version("2.0", ">=")
+
+    - name: Condition multiple (OU)
+      ansible.builtin.debug:
+        msg: "Dev ou staging"
+      when: env == "développement" or env == "staging"
+
+    - name: Vérifier si une variable est définie
+      ansible.builtin.debug:
+        msg: "La variable env est définie: {{ env }}"
+      when: env is defined
+
+    - name: Condition avec register
+      ansible.builtin.command:
+        cmd: "ls /tmp"
+      register: ls_result
+      changed_when: false
+
+    - name: Afficher si la commande a réussi
+      ansible.builtin.debug:
+        msg: "/tmp contient {{ ls_result.stdout_lines | length }} éléments"
+      when: ls_result.rc == 0

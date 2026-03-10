@@ -1,0 +1,44 @@
+---
+- name: Handlers avancés - idempotence
+  hosts: local
+  gather_facts: false
+  vars:
+    config_file: /tmp/handlers_demo/app_v2.conf
+    config_content: |
+      [app]
+      version=2.0
+      feature_x=enabled
+
+  handlers:
+    - name: Valider la configuration
+      ansible.builtin.debug:
+        msg: "✅ Validation de la nouvelle configuration..."
+
+    - name: Appliquer la configuration
+      ansible.builtin.debug:
+        msg: "⚙️  Application de la configuration..."
+
+  tasks:
+    - name: S'assurer que le répertoire existe
+      ansible.builtin.file:
+        path: /tmp/handlers_demo
+        state: directory
+        mode: '0755'
+
+    - name: Déployer la config v2 (1ère exécution = changed)
+      ansible.builtin.copy:
+        content: "{{ config_content }}"
+        dest: "{{ config_file }}"
+        mode: '0644'
+      notify:
+        - Valider la configuration
+        - Appliquer la configuration
+
+    - name: Déployer la config v2 (2ème exécution = ok, pas de handler)
+      ansible.builtin.copy:
+        content: "{{ config_content }}"
+        dest: "{{ config_file }}"
+        mode: '0644'
+      notify:
+        - Valider la configuration
+        - Appliquer la configuration
