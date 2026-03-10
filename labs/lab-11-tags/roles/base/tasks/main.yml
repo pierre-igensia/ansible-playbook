@@ -1,0 +1,13 @@
+---
+- name: Vérifier la connectivité
+  ansible.builtin.ping:
+
+- name: Afficher les informations système
+  ansible.builtin.debug:
+    msg: "Système : {{ ansible_distribution | default('inconnu') }} - {{ ansible_hostname }}"
+
+- name: Créer le répertoire de configuration
+  ansible.builtin.file:
+    path: /tmp/lab11_config
+    state: directory
+    mode: '0755'

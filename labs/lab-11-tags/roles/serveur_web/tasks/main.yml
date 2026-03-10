@@ -1,0 +1,16 @@
+---
+- name: Simuler l'installation du serveur web
+  ansible.builtin.debug:
+    msg: "Installation du serveur web nginx simulée"
+
+- name: Créer la racine web
+  ansible.builtin.file:
+    path: /tmp/lab11_www
+    state: directory
+    mode: '0755'
+
+- name: Déployer la page d'accueil
+  ansible.builtin.copy:
+    content: "<html><body><h1>Lab 11 - Tags</h1></body></html>\n"
+    dest: /tmp/lab11_www/index.html
+    mode: '0644'

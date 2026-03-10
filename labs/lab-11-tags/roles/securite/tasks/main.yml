@@ -1,0 +1,19 @@
+---
+- name: Vérifier les permissions des répertoires sensibles
+  ansible.builtin.file:
+    path: /tmp/lab11_config
+    state: directory
+    mode: '0700'
+
+- name: Créer un fichier de politique de sécurité
+  ansible.builtin.copy:
+    content: |
+      # Politique de sécurité - Lab 11
+      - Accès restreint aux fichiers de configuration
+      - Journalisation des accès activée
+    dest: /tmp/lab11_config/politique_securite.txt
+    mode: '0600'
+
+- name: Afficher le résumé de durcissement
+  ansible.builtin.debug:
+    msg: "Durcissement du système terminé"
