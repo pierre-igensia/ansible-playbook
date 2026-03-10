@@ -28,8 +28,8 @@
 
     - name: Tâche avec une condition
       ansible.builtin.debug:
-        msg: "Cette tâche ne s'exécute que sur Debian"
-      when: ansible_os_family == "Debian"
+        msg: "Cette tâche ne s'exécute que sur les systèmes Linux ({{ ansible_os_family }})"
+      when: ansible_os_family in ["Debian", "RedHat", "Suse", "Archlinux"]
 
     - name: Résumé final
       ansible.builtin.debug:
