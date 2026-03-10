@@ -20,7 +20,7 @@
 
     - name: Afficher l'utilisation disque
       ansible.builtin.debug:
-        msg: "Utilisation disque ({{ ansible_mounts[0].mount }}): {{ disk_usage_pct }}%"
+        msg: "Utilisation disque ({{ ansible_mounts[0].mount }}) : {{ disk_usage_pct }}%"
       when: ansible_mounts is defined and disk_usage_pct is defined
 
     - name: Info disque non disponible (macOS)
@@ -30,9 +30,9 @@
 
     - name: Facts personnalisés avec set_fact
       ansible.builtin.set_fact:
-        ma_variable_custom: "valeur calculée à {{ ansible_date_time.time }}"
-        est_debian: "{{ ansible_os_family == 'Debian' }}"
+        my_custom_variable: "valeur calculée à {{ ansible_date_time.time }}"
+        is_debian: "{{ ansible_os_family == 'Debian' }}"
 
     - name: Afficher les variables personnalisées
       ansible.builtin.debug:
-        msg: "Custom: {{ ma_variable_custom }}, Est Debian: {{ est_debian }}"
+        msg: "Custom : {{ my_custom_variable }}, Est Debian : {{ is_debian }}"

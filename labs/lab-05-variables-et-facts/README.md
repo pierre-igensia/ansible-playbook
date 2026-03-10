@@ -1,6 +1,6 @@
 # Lab 05 – Variables et Faits Ansible
 
-## 🎯 Objectifs
+## Objectifs
 
 À la fin de ce lab, vous serez capable de :
 
@@ -10,17 +10,17 @@
 - Maîtriser la priorité des variables
 - Créer des variables dynamiques avec `set_fact` et `register`
 
-## 📋 Prérequis
+## Prérequis
 
 - Labs 01–04 complétés
 - Notions de base en YAML
 - Ansible installé et fonctionnel
 
-## ⏱️ Durée estimée
+## Durée estimée
 
 60 minutes
 
-## 🏗️ Mise en place
+## Mise en place
 
 ```bash
 # Depuis la racine du dépôt
@@ -33,7 +33,7 @@ cat inventory/mononode.yml
 ansible local -m ping
 ```
 
-## 📚 Concepts expliqués
+## Concepts expliqués
 
 ### Types de variables
 
@@ -47,14 +47,14 @@ Déclarées directement dans le playbook, au niveau du play. Elles sont visibles
 - name: Mon play
   hosts: local
   vars:
-    ma_variable: "bonjour"
-    mon_nombre: 42
-    ma_liste:
-      - élément1
-      - élément2
-    mon_dict:
-      clé: valeur
-      autre_clé: autre_valeur
+    my_variable: "bonjour"
+    my_number: 42
+    my_list:
+      - element1
+      - element2
+    my_dict:
+      key: value
+      other_key: other_value
 ```
 
 #### 2. Variables externes (`vars_files`)
@@ -98,7 +98,7 @@ Passées avec l'option `-e` ou `--extra-vars`, elles ont la priorité la plus ha
 
 ```bash
 ansible-playbook playbook.yml -e "env=production version=2.0"
-ansible-playbook playbook.yml -e @fichier_vars.yml
+ansible-playbook playbook.yml -e @vars_file.yml
 ```
 
 #### 6. Variables enregistrées (`register`)
@@ -108,11 +108,11 @@ Permettent de capturer la sortie d'une tâche pour la réutiliser :
 ```yaml
 - name: Lister les fichiers
   ansible.builtin.command: ls /tmp
-  register: resultat_ls
+  register: ls_result
 
 - name: Afficher le résultat
   ansible.builtin.debug:
-    msg: "Fichiers: {{ resultat_ls.stdout_lines }}"
+    msg: "Fichiers : {{ ls_result.stdout_lines }}"
 ```
 
 #### 7. Facts Ansible (`ansible_facts`)
@@ -137,7 +137,7 @@ Quand une variable est définie à plusieurs endroits, Ansible applique un ordre
 | 8 | `set_fact` |
 | 9 (la plus haute) | `extra_vars` (-e) |
 
-> 💡 **Astuce** : En cas de doute, les `extra_vars` (`-e`) gagnent toujours. C'est utile pour les surcharges ponctuelles en CI/CD ou en dépannage.
+> **Astuce** : En cas de doute, les `extra_vars` (`-e`) gagnent toujours. C'est utile pour les surcharges ponctuelles en CI/CD ou en dépannage.
 
 ---
 
@@ -192,13 +192,13 @@ Si vous n'avez pas besoin des facts (gain de performance) :
 ```yaml
 - name: Créer un fact personnalisé
   ansible.builtin.set_fact:
-    mon_fact: "calculé à {{ ansible_date_time.time }}"
-    est_production: "{{ env == 'production' }}"
+    my_fact: "calculé à {{ ansible_date_time.time }}"
+    is_production: "{{ env == 'production' }}"
 ```
 
 ---
 
-## 🛠️ Exercices
+## Exercices
 
 ### Exercice 1 – Variables dans un playbook
 
@@ -228,20 +228,20 @@ Observez comment les différents types de variables sont utilisés et affichés.
 cat vars/app_config.yml
 ```
 
-2. Créez votre propre fichier de variables `vars/mon_app.yml` :
+2. Créez votre propre fichier de variables `vars/my_app.yml` :
 
 ```yaml
 ---
-mon_app_nom: "super-app"
-mon_app_port: 9000
-mon_app_auteur: "votre_nom"
-fonctionnalites:
+my_app_name: "super-app"
+my_app_port: 9000
+my_app_author: "votre_nom"
+features:
   - authentification
   - tableau-de-bord
   - api-rest
 ```
 
-3. Créez un playbook `playbooks/mon_app.yml` qui utilise ce fichier :
+3. Créez un playbook `playbooks/my_app.yml` qui utilise ce fichier :
 
 ```yaml
 ---
@@ -249,21 +249,21 @@ fonctionnalites:
   hosts: local
   gather_facts: false
   vars_files:
-    - ../vars/mon_app.yml
+    - ../vars/my_app.yml
   tasks:
     - name: Présenter l'application
       ansible.builtin.debug:
         msg: |
-          Application: {{ mon_app_nom }}
-          Port: {{ mon_app_port }}
-          Auteur: {{ mon_app_auteur }}
-          Fonctionnalités: {{ fonctionnalites | join(', ') }}
+          Application : {{ my_app_name }}
+          Port : {{ my_app_port }}
+          Auteur : {{ my_app_author }}
+          Fonctionnalités : {{ features | join(', ') }}
 ```
 
 4. Exécutez-le :
 
 ```bash
-ansible-playbook playbooks/mon_app.yml
+ansible-playbook playbooks/my_app.yml
 ```
 
 ---
@@ -293,7 +293,7 @@ ansible-playbook playbooks/facts_exploration.yml
 4. Vérifiez le rapport généré par `variables_demo.yml` :
 
 ```bash
-cat /tmp/rapport_systeme.txt
+cat /tmp/system_report.txt
 ```
 
 **Défi** : Modifiez `facts_exploration.yml` pour afficher également la liste des interfaces réseau avec leur adresse IP.
@@ -317,7 +317,7 @@ ansible-playbook playbooks/variables_demo.yml \
   -e "app_environment=production app_port=443"
 ```
 
-3. Passez plusieurs variables via un fichier JSON :
+3. Passez plusieurs variables via un fichier YAML :
 
 ```bash
 # Créez un fichier de surcharge
@@ -335,7 +335,7 @@ Observez que les valeurs passées avec `-e` écrasent celles définies dans `var
 
 ---
 
-## ✅ Validation
+## Validation
 
 Pour valider votre compréhension du lab, vérifiez les points suivants :
 
@@ -344,8 +344,8 @@ Pour valider votre compréhension du lab, vérifiez les points suivants :
 ansible-playbook playbooks/variables_demo.yml
 
 # 2. Le rapport système a bien été créé
-ls -la /tmp/rapport_systeme.txt
-cat /tmp/rapport_systeme.txt
+ls -la /tmp/system_report.txt
+cat /tmp/system_report.txt
 
 # 3. Le playbook facts_exploration.yml s'exécute sans erreur
 ansible-playbook playbooks/facts_exploration.yml
@@ -357,13 +357,13 @@ ansible-playbook playbooks/variables_demo.yml \
 
 **Critères de réussite :**
 - [ ] `variables_demo.yml` s'exécute entièrement sans erreur
-- [ ] Le fichier `/tmp/rapport_systeme.txt` est créé avec les bonnes informations
+- [ ] Le fichier `/tmp/system_report.txt` est créé avec les bonnes informations
 - [ ] `facts_exploration.yml` affiche l'utilisation disque
 - [ ] La surcharge via `-e` fonctionne correctement
 
 ---
 
-## 🔍 Pour aller plus loin
+## Pour aller plus loin
 
 - **`vars_prompt`** : Demander des variables de manière interactive à l'exécution
 - **`include_vars`** : Charger des variables dynamiquement pendant l'exécution d'un play
@@ -381,17 +381,17 @@ ansible-playbook playbook.yml --ask-vault-pass
 
 ---
 
-## 💡 Solutions
+## Solutions
 
 <details>
-<summary>Solution Exercice 2 – Fichier vars/mon_app.yml</summary>
+<summary>Solution Exercice 2 – Fichier vars/my_app.yml</summary>
 
 ```yaml
 ---
-mon_app_nom: "super-app"
-mon_app_port: 9000
-mon_app_auteur: "votre_nom"
-fonctionnalites:
+my_app_name: "super-app"
+my_app_port: 9000
+my_app_author: "votre_nom"
+features:
   - authentification
   - tableau-de-bord
   - api-rest
@@ -400,7 +400,7 @@ fonctionnalites:
 </details>
 
 <details>
-<summary>Solution Exercice 2 – Playbook playbooks/mon_app.yml</summary>
+<summary>Solution Exercice 2 – Playbook playbooks/my_app.yml</summary>
 
 ```yaml
 ---
@@ -408,23 +408,23 @@ fonctionnalites:
   hosts: local
   gather_facts: false
   vars_files:
-    - ../vars/mon_app.yml
+    - ../vars/my_app.yml
   tasks:
     - name: Présenter l'application
       ansible.builtin.debug:
         msg: |
-          Application: {{ mon_app_nom }}
-          Port: {{ mon_app_port }}
-          Auteur: {{ mon_app_auteur }}
-          Fonctionnalités: {{ fonctionnalites | join(', ') }}
+          Application : {{ my_app_name }}
+          Port : {{ my_app_port }}
+          Auteur : {{ my_app_author }}
+          Fonctionnalités : {{ features | join(', ') }}
 
     - name: Vérifier que le port est dans une plage valide
       ansible.builtin.assert:
         that:
-          - mon_app_port > 1024
-          - mon_app_port < 65535
-        fail_msg: "Le port {{ mon_app_port }} n'est pas dans la plage autorisée"
-        success_msg: "Port {{ mon_app_port }} valide"
+          - my_app_port > 1024
+          - my_app_port < 65535
+        fail_msg: "Le port {{ my_app_port }} n'est pas dans la plage autorisée"
+        success_msg: "Port {{ my_app_port }} valide"
 ```
 
 </details>
@@ -435,7 +435,7 @@ fonctionnalites:
 ```yaml
 - name: Afficher les interfaces réseau avec IP
   ansible.builtin.debug:
-    msg: "Interface {{ item }} - IP: {{ hostvars[inventory_hostname]['ansible_' + item]['ipv4']['address'] | default('N/A') }}"
+    msg: "Interface {{ item }} - IP : {{ hostvars[inventory_hostname]['ansible_' + item]['ipv4']['address'] | default('N/A') }}"
   loop: "{{ ansible_interfaces }}"
   when: >
     hostvars[inventory_hostname]['ansible_' + item] is defined and

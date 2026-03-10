@@ -10,18 +10,18 @@
   tasks:
     - name: Tâche spécifique à Linux
       ansible.builtin.debug:
-        msg: "Je suis sur Linux!"
+        msg: "Je suis sur Linux !"
       when: ansible_os_family in ["Debian", "RedHat", "Archlinux"]
 
     - name: Vérification de mémoire suffisante
       ansible.builtin.debug:
-        msg: "Mémoire suffisante: {{ ansible_memtotal_mb }} MB"
-      when: ansible_memtotal_mb >= min_memory_mb
+        msg: "Mémoire suffisante : {{ ansible_memtotal_mb }} MB"
+      when: (ansible_memtotal_mb | int) >= (min_memory_mb | int)
 
     - name: Alerte mémoire insuffisante
       ansible.builtin.debug:
-        msg: "ATTENTION: Mémoire insuffisante ({{ ansible_memtotal_mb }} MB < {{ min_memory_mb }} MB)"
-      when: ansible_memtotal_mb < min_memory_mb
+        msg: "ATTENTION : Mémoire insuffisante ({{ ansible_memtotal_mb }} MB < {{ min_memory_mb }} MB)"
+      when: (ansible_memtotal_mb | int) < (min_memory_mb | int)
 
     - name: Condition multiple (ET)
       ansible.builtin.debug:
@@ -33,11 +33,11 @@
     - name: Condition multiple (OU)
       ansible.builtin.debug:
         msg: "Dev ou staging"
-      when: env == "développement" or env == "staging"
+      when: env == "development" or env == "staging"
 
     - name: Vérifier si une variable est définie
       ansible.builtin.debug:
-        msg: "La variable env est définie: {{ env }}"
+        msg: "La variable env est définie : {{ env }}"
       when: env is defined
 
     - name: Condition avec register

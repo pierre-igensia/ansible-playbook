@@ -1,0 +1,13 @@
+---
+# Subtasks file included by boucles.yml for the deployment simulation.
+# Using include_tasks avoids the scope conflict where pause in loop_control
+# cannot resolve loop variables (item/index_var) properly.
+
+- name: "Déploiement de {{ item.name }}"
+  ansible.builtin.debug:
+    msg: "[{{ idx + 1 }}/{{ components | length }}] Déploiement de {{ item.name }}..."
+
+- name: "Pause entre les composants"
+  ansible.builtin.pause:
+    seconds: "{{ delay_seconds }}"
+  when: idx < (components | length - 1)
