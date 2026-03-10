@@ -189,13 +189,13 @@ Combinez l'inventaire statique local et le script dynamique :
 ```bash
 # Utiliser les deux sources d'inventaire simultanément
 ansible-inventory \
-  \
+  -i inventory/hotes_supplementaires.yml \
   -i inventory/inventaire_dynamique.py \
   --graph
 
 # Lancer un playbook sur tous les hôtes de type 'local'
 ansible-playbook \
-  \
+  -i inventory/hotes_supplementaires.yml \
   -i inventory/inventaire_dynamique.py \
   playbooks/tester_inventaire.yml
 ```

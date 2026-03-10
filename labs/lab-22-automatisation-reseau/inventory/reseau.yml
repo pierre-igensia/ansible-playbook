@@ -1,0 +1,29 @@
+---
+# Inventaire réseau simulé pour le Lab 22
+# Utilise ansible_connection: local car nous simulons les équipements
+all:
+  children:
+    routeurs:
+      hosts:
+        R1:
+          ansible_host: 192.168.1.1
+        R2:
+          ansible_host: 192.168.1.2
+      vars:
+        ansible_connection: local
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: "{{ vault_network_password | default('admin') }}"
+        ansible_become: true
+        ansible_become_method: enable
+        ansible_become_password: "{{ vault_enable_password | default('enable') }}"
+
+    switchs:
+      hosts:
+        SW1:
+          ansible_host: 192.168.1.10
+      vars:
+        ansible_connection: local
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: "{{ vault_network_password | default('admin') }}"

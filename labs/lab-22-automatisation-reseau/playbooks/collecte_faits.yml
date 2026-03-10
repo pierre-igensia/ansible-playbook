@@ -1,0 +1,91 @@
+---
+# Exercice 2 – Commandes show et collecte de faits réseau
+# Ce playbook simule la collecte d'informations sur des équipements réseau
+# En production, on utiliserait cisco.ios.ios_command et cisco.ios.ios_facts
+- name: Collecte de faits et commandes show (simulation)
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "📋 Explication – Collecte de faits réseau"
+      ansible.builtin.debug:
+        msg: |
+          === Collecte de faits réseau avec Ansible ===
+
+          En production, on utilise les modules suivants :
+
+          1. cisco.ios.ios_facts     → Collecter les faits d'un équipement IOS
+          2. cisco.ios.ios_command   → Exécuter des commandes show
+          3. ansible.netcommon.cli_command → Commande CLI générique
+
+          Exemple de syntaxe :
+            - name: Exécuter show version
+              cisco.ios.ios_command:
+                commands:
+                  - show version
+                  - show ip interface brief
+              register: sortie_show
+
+    - name: "🔍 Simuler la commande show version"
+      ansible.builtin.set_fact:
+        sortie_show_version:
+          - |
+            Cisco IOS XE Software, Version 16.12.4
+            Router R1 uptime is 45 days, 3 hours, 12 minutes
+            System image file is "bootflash:isr4431-universalk9.16.12.04.SPA.bin"
+            cisco ISR4431/K9 (2RU) processor with 8113018K bytes of memory.
+
+    - name: "📊 Afficher le résultat de show version"
+      ansible.builtin.debug:
+        msg: "{{ sortie_show_version }}"
+
+    - name: "🔍 Simuler la commande show ip interface brief"
+      ansible.builtin.set_fact:
+        sortie_interfaces:
+          - |
+            Interface              IP-Address      OK? Method Status Protocol
+            GigabitEthernet0/0     10.0.0.1        YES NVRAM  up     up
+            GigabitEthernet0/1     192.168.1.1     YES NVRAM  up     up
+            Loopback0              1.1.1.1         YES NVRAM  up     up
+
+    - name: "📊 Afficher les interfaces"
+      ansible.builtin.debug:
+        msg: "{{ sortie_interfaces }}"
+
+    - name: "🔍 Simuler la collecte de faits (ios_facts)"
+      ansible.builtin.set_fact:
+        faits_reseau:
+          ansible_net_hostname: "R1"
+          ansible_net_model: "ISR4431/K9"
+          ansible_net_version: "16.12.4"
+          ansible_net_serialnum: "FTX1234ABCD"
+          ansible_net_image: "bootflash:isr4431-universalk9.16.12.04.SPA.bin"
+          ansible_net_interfaces:
+            GigabitEthernet0/0:
+              ipv4:
+                - address: "10.0.0.1"
+                  subnet: "24"
+              operstatus: "up"
+            GigabitEthernet0/1:
+              ipv4:
+                - address: "192.168.1.1"
+                  subnet: "24"
+              operstatus: "up"
+
+    - name: "📊 Afficher les faits réseau collectés"
+      ansible.builtin.debug:
+        msg: |
+          === Faits réseau de {{ faits_reseau.ansible_net_hostname }} ===
+          Modèle    : {{ faits_reseau.ansible_net_model }}
+          Version   : {{ faits_reseau.ansible_net_version }}
+          Numéro de série : {{ faits_reseau.ansible_net_serialnum }}
+          Image     : {{ faits_reseau.ansible_net_image }}
+
+    - name: "📁 Sauvegarder les faits en JSON"
+      ansible.builtin.copy:
+        content: "{{ faits_reseau | to_nice_json }}"
+        dest: /tmp/reseau_demo/R1_facts.json
+        mode: '0644'
+
+    - name: "✅ Collecte terminée"
+      ansible.builtin.debug:
+        msg: "Les faits réseau ont été collectés et sauvegardés dans /tmp/reseau_demo/"

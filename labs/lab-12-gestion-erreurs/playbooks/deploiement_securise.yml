@@ -1,0 +1,81 @@
+---
+# Déploiement sécurisé avec rollback automatique
+# Exercice 3 : Utilisation de block/rescue/always pour un mécanisme de rollback
+- name: Déploiement sécurisé avec rollback automatique
+  hosts: local
+  gather_facts: true
+  vars:
+    repertoire_app: /tmp/deploiement_securise
+    version_actuelle: "1.0"
+    version_nouvelle: "2.0"
+
+  tasks:
+    - name: Préparer l'environnement
+      ansible.builtin.file:
+        path: "{{ repertoire_app }}"
+        state: directory
+        mode: '0755'
+
+    # Simuler la version actuelle en place
+    - name: Mettre en place la version actuelle
+      ansible.builtin.copy:
+        content: "version={{ version_actuelle }}\n"
+        dest: "{{ repertoire_app }}/version.txt"
+        mode: '0644'
+
+    # Bloc de déploiement avec rollback automatique
+    - name: Déploiement avec rollback automatique
+      block:
+        - name: Sauvegarder la version actuelle
+          ansible.builtin.copy:
+            src: "{{ repertoire_app }}/version.txt"
+            dest: "{{ repertoire_app }}/version.txt.bak"
+            remote_src: true
+            mode: '0644'
+
+        - name: Déployer la nouvelle version
+          ansible.builtin.copy:
+            content: "version={{ version_nouvelle }}\n"
+            dest: "{{ repertoire_app }}/version.txt"
+            mode: '0644'
+
+        - name: Vérifier le déploiement (simulation)
+          ansible.builtin.command:
+            cmd: "cat {{ repertoire_app }}/version.txt"
+          register: verification
+          changed_when: false
+          failed_when: "'version=' not in verification.stdout"
+
+        - name: Déploiement réussi
+          ansible.builtin.debug:
+            msg: "Déploiement de la version {{ version_nouvelle }} réussi"
+
+      rescue:
+        - name: Erreur détectée - lancement du rollback
+          ansible.builtin.debug:
+            msg: "ERREUR : le déploiement a échoué, rollback en cours..."
+
+        - name: Restaurer la version précédente depuis la sauvegarde
+          ansible.builtin.copy:
+            src: "{{ repertoire_app }}/version.txt.bak"
+            dest: "{{ repertoire_app }}/version.txt"
+            remote_src: true
+            mode: '0644'
+
+        - name: Confirmer le rollback
+          ansible.builtin.debug:
+            msg: "Rollback terminé : retour à la version {{ version_actuelle }}"
+
+      always:
+        - name: Enregistrer le résultat du déploiement
+          ansible.builtin.copy:
+            content: |
+              date={{ ansible_date_time.iso8601 }}
+              version_cible={{ version_nouvelle }}
+              statut=termine
+            dest: "{{ repertoire_app }}/rapport_deploiement.txt"
+            mode: '0644'
+
+        - name: Afficher le rapport final
+          ansible.builtin.debug:
+            msg: "Rapport de déploiement enregistré dans {{ repertoire_app }}/rapport_deploiement.txt"

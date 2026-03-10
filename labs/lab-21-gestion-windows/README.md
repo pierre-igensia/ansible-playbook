@@ -76,7 +76,7 @@ ansible_password: "{{ vault_windows_password }}"
 | `ansible.windows.win_user` | Gérer les utilisateurs locaux |
 | `ansible.windows.win_regedit` | Modifier le registre |
 | `ansible.windows.win_shell` | Exécuter des commandes PowerShell |
-| `community.windows.win_chocolatey` | Installer via Chocolatey |
+| `chocolatey.chocolatey.win_chocolatey` | Installer via Chocolatey |
 
 ### Inventaire Windows
 
@@ -155,12 +155,12 @@ cat playbooks/chocolatey_demo.yml
 2. Observer comment installer Chocolatey puis des packages :
 ```yaml
 - name: Installer Chocolatey
-  ansible.windows.win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: chocolatey
     state: present
 
 - name: Installer des logiciels
-  community.windows.win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: "{{ item }}"
     state: present
   loop:
@@ -246,12 +246,12 @@ ansible windows -m ansible.windows.win_ping
   hosts: windows
   tasks:
     - name: S'assurer que Chocolatey est installé
-      ansible.windows.win_chocolatey:
+      chocolatey.chocolatey.win_chocolatey:
         name: chocolatey
         state: present
 
     - name: Installer les outils de développement
-      community.windows.win_chocolatey:
+      chocolatey.chocolatey.win_chocolatey:
         name: "{{ item }}"
         state: present
       loop:

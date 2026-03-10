@@ -7,14 +7,14 @@
 
 ## 📋 Prérequis
 - Python 3.11+ installé
-- Ansible installé (voir setup/README.md)
+- Ansible installé (voir les instructions d'installation dans le README principal du dépôt)
 - Connaissances de base en ligne de commande Linux
 
 ## ⏱️ Durée estimée
 30 minutes
 
 ## 🏗️ Mise en place
-1. Suivre les instructions dans `setup/README.md`
+1. Suivre les instructions d'installation du README principal du dépôt
 2. Activer l'environnement virtuel
 3. Se placer dans le répertoire `labs/lab-01-premiers-pas/`
 

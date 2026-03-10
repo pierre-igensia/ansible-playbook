@@ -78,7 +78,7 @@
 ```bash
 ansible-playbook playbooks/gestion_erreurs.yml
 ansible-playbook playbooks/block_rescue.yml
-ansible-playbook playbooks/déploiement_sécurisé.yml
+ansible-playbook playbooks/deploiement_securise.yml
 ```
 
 ## 🔍 Pour aller plus loin

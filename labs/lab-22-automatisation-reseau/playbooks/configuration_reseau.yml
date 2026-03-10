@@ -1,0 +1,134 @@
+---
+# Exercice 3 – Configuration et sauvegarde réseau
+# Ce playbook simule l'application et la sauvegarde de configurations réseau
+# En production, on utiliserait cisco.ios.ios_config et cisco.ios.ios_command
+- name: Configuration et sauvegarde réseau (simulation)
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "📋 Explication – Configuration réseau avec Ansible"
+      ansible.builtin.debug:
+        msg: |
+          === Configuration réseau avec Ansible ===
+
+          En production, on utilise les modules suivants :
+
+          1. cisco.ios.ios_config  → Appliquer une configuration IOS
+          2. cisco.ios.ios_command → Vérifier la configuration appliquée
+          3. ansible.netcommon.cli_config → Configuration CLI générique
+
+          Exemple de syntaxe :
+            - name: Configurer une interface
+              cisco.ios.ios_config:
+                lines:
+                  - description Lien vers serveur web
+                  - ip address 10.0.1.1 255.255.255.0
+                  - no shutdown
+                parents: interface GigabitEthernet0/1
+                save_when: modified
+
+    - name: Créer le répertoire de sauvegarde
+      ansible.builtin.file:
+        path: /tmp/reseau_demo/backups
+        state: directory
+        mode: '0755'
+
+    - name: "💾 Simuler la sauvegarde de la configuration actuelle"
+      ansible.builtin.copy:
+        content: |
+          ! Configuration sauvegardée - Router R1
+          ! Date : {{ lookup('pipe', 'date +%Y-%m-%d_%H:%M:%S') }}
+          hostname R1
+          !
+          interface GigabitEthernet0/0
+           ip address 10.0.0.1 255.255.255.0
+           no shutdown
+          !
+          interface GigabitEthernet0/1
+           ip address 192.168.1.1 255.255.255.0
+           no shutdown
+          !
+          router ospf 1
+           network 10.0.0.0 0.0.0.255 area 0
+           network 192.168.1.0 0.0.0.255 area 0
+          !
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+          end
+        dest: "/tmp/reseau_demo/backups/R1_{{ lookup('pipe', 'date +%Y%m%d') }}.cfg"
+        mode: '0644'
+
+    - name: "📊 Afficher la configuration sauvegardée"
+      ansible.builtin.debug:
+        msg: "Configuration sauvegardée : /tmp/reseau_demo/backups/R1_{{ lookup('pipe', 'date +%Y%m%d') }}.cfg"
+
+    - name: "🔧 Simuler l'application d'une nouvelle configuration"
+      ansible.builtin.copy:
+        content: |
+          ! Configuration modifiée par Ansible - Router R1
+          ! Date : {{ lookup('pipe', 'date +%Y-%m-%d_%H:%M:%S') }}
+          hostname R1
+          !
+          interface GigabitEthernet0/0
+           description Lien WAN
+           ip address 10.0.0.1 255.255.255.0
+           no shutdown
+          !
+          interface GigabitEthernet0/1
+           description Configuré par Ansible
+           ip address 10.0.1.1 255.255.255.0
+           no shutdown
+          !
+          interface Loopback0
+           description Loopback de management
+           ip address 1.1.1.1 255.255.255.255
+          !
+          router ospf 1
+           network 10.0.0.0 0.0.0.255 area 0
+           network 10.0.1.0 0.0.0.255 area 0
+           network 1.1.1.1 0.0.0.0 area 0
+          !
+          ip access-list standard GESTION
+           permit 192.168.1.0 0.0.0.255
+           deny any log
+          !
+          line vty 0 4
+           access-class GESTION in
+           login local
+           transport input ssh
+          !
+          end
+        dest: /tmp/reseau_demo/R1_running.cfg
+        mode: '0644'
+
+    - name: "📊 Afficher les changements appliqués"
+      ansible.builtin.debug:
+        msg: |
+          === Changements appliqués sur R1 ===
+          - Interface GigabitEthernet0/1 : description et IP modifiées
+          - Interface Loopback0 : ajoutée pour le management
+          - ACL GESTION : ajoutée pour sécuriser l'accès VTY
+          - OSPF : réseaux mis à jour
+
+    - name: "🔍 Simuler la vérification de la configuration"
+      ansible.builtin.debug:
+        msg: |
+          === Vérification de la configuration GigabitEthernet0/1 ===
+          Building configuration...
+          Current configuration : 128 bytes
+          !
+          interface GigabitEthernet0/1
+           description Configuré par Ansible
+           ip address 10.0.1.1 255.255.255.0
+           no shutdown
+          end
+
+    - name: "✅ Configuration et sauvegarde terminées"
+      ansible.builtin.debug:
+        msg: |
+          Résumé :
+            - Sauvegarde : /tmp/reseau_demo/backups/R1_{{ lookup('pipe', 'date +%Y%m%d') }}.cfg
+            - Configuration appliquée : /tmp/reseau_demo/R1_running.cfg
+          En production, on utiliserait save_when: modified pour persister les changements.

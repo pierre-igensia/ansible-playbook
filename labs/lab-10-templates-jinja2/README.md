@@ -69,8 +69,9 @@ Les macros sont des fonctions réutilisables dans les templates.
 ### Exercice 3 – Template avec macros
 **But :** Créer et utiliser une macro Jinja2.
 **Instructions :**
-1. Définir une macro pour générer des blocs de configuration répétitifs
-2. Appeler la macro plusieurs fois dans le template
+1. Examiner le template `templates/rapport.html.j2` qui contient un exemple de macro
+2. Définir une macro pour générer des blocs de configuration répétitifs
+3. Appeler la macro plusieurs fois dans le template
 
 ### Exercice 4 – Filtres avancés
 **But :** Utiliser `selectattr`, `map`, `combine` et autres filtres avancés.
@@ -111,6 +112,6 @@ cat /tmp/jinja2_demo/rapport.html
 
 ### Solution Exercice 2
 ```bash
-ansible-playbook playbooks/nginx_config.yml
+ansible-playbook playbooks/filtres_demo.yml
 ```
 </details>

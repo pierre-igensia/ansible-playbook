@@ -1,0 +1,25 @@
+---
+# Playbook utilisant des rôles avec des tags
+# Exercice 4 : Observer comment les tags se propagent aux tâches des rôles
+- name: Déploiement complet avec rôles et tags
+  hosts: local
+  gather_facts: true
+
+  roles:
+    # Rôle de base : configuration commune du serveur
+    - role: base
+      tags:
+        - base
+        - configuration
+
+    # Rôle serveur web : installation et configuration de nginx
+    - role: serveur_web
+      tags:
+        - web
+        - installation
+
+    # Rôle sécurité : durcissement du système
+    - role: securite
+      tags:
+        - securite
+        - durcissement

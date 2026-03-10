@@ -24,7 +24,7 @@
 
 ```bash
 # Depuis la racine du dépôt
-cd labs/lab-05-variables-et-faits
+cd labs/lab-05-variables-et-facts
 
 # Vérifier l'inventaire
 cat inventory/mononode.yml

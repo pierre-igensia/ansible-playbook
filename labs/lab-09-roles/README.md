@@ -63,12 +63,12 @@ ansible-galaxy init mon-role
 
 ## 🛠️ Exercices
 
-### Exercice 1 – Initialiser un rôle
-**But :** Créer la structure d'un rôle avec ansible-galaxy.
+### Exercice 1 – Explorer le rôle existant
+**But :** Comprendre la structure d'un rôle Ansible.
 **Instructions :**
 1. Se placer dans `labs/lab-09-roles/`
-2. Exécuter : `ansible-galaxy init roles/serveur-web`
-3. Explorer la structure créée avec `tree roles/serveur-web`
+2. Explorer la structure du rôle existant avec `tree roles/serveur-web`
+3. Examiner les fichiers présents dans chaque sous-répertoire
 
 **Résultat attendu :** Arborescence complète du rôle avec tous les sous-répertoires.
 
@@ -124,8 +124,9 @@ ansible-playbook playbooks/site.yml
 ### Solution Exercice 1
 ```bash
 cd labs/lab-09-roles/
-ansible-galaxy init roles/serveur-web
 tree roles/serveur-web
+cat roles/serveur-web/tasks/main.yml
+cat roles/serveur-web/defaults/main.yml
 ```
 
 ### Solution Exercice 2
